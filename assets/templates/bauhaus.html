@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KHA Formwerk — Bauhaus Template</title>
+<!--
+  包豪斯风格起始模板（零构建，可直接打开）
+  ─────────────────────────────────────────────
+  风格规则速记：
+  · 几何是主角：每屏一个主角几何（圆/方/三角）
+  · Kandinsky 配对：黄=三角、红=方、蓝=圆，禁止乱配
+  · 旋转只用 45° 增量；矩形直角、圆是正圆，无中间态圆角
+  · 黑/米白 ≥80% 面积，单屏原色 ≤3 个，黄不做文字色
+  · 平涂无渐变无投影，层级用硬阴影 (4px 4px 0) 与粗规则线
+  展示字体 Jost (Futura 谱系) 走 Google Fonts，离线回退系统字体
+  详见 design-styles skill 的 references/bauhaus.md
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  /* ============ 1. 设计 Token ============ */
+  :root {
+    --red:    #E2001A;
+    --yellow: #F5A800;
+    --blue:   #1D4E89;
+    --ink:    #111111;
+    --paper:  #F5F1E6;
+    --surface: #FFFFFF;
+
+    --font: "Jost", "Futura", "Century Gothic", "PingFang SC", "Microsoft YaHei", sans-serif;
+
+    --rule:      1px solid var(--ink);   /* 细节规则线 */
+    --rule-bold: 4px solid var(--ink);   /* 分节规则线 */
+    --shadow: 4px 4px 0 0 var(--ink);    /* 实色硬阴影 */
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: var(--font);
+    font-size: 1.0625rem;
+    line-height: 1.5;
+    color: var(--ink);
+    background: var(--paper);
+  }
+
+  a { color: inherit; text-decoration: none; }
+  :focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+
+  .container { max-width: 1280px; margin-inline: auto; padding-inline: clamp(20px, 4vw, 48px); }
+
+  h1, h2, h3 { font-weight: 700; line-height: 1.05; }
+  h1 { font-size: clamp(3rem, 6vw, 4.5rem); font-weight: 900; letter-spacing: -0.02em; }
+  h2 { font-size: clamp(1.75rem, 3vw, 2.25rem); }
+
+  /* Bayer 遗产：全大写标签 0.12em 字距 */
+  .label {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .num { font-variant-numeric: tabular-nums; }
+
+  /* ============ 2. 色块导航：每项一种颜色 ============ */
+  .nav { border-bottom: var(--rule-bold); background: var(--paper); position: sticky; top: 0; z-index: 10; }
+  .nav-inner { display: flex; align-items: stretch; justify-content: space-between; min-height: 64px; }
+  .wordmark { display: flex; align-items: center; font-weight: 900; font-size: 1.125rem; letter-spacing: 0.06em; }
+  .nav-links { display: flex; list-style: none; }
+  .nav-links a {
+    display: flex; align-items: center; height: 100%;
+    padding: 0 clamp(12px, 2vw, 24px);
+    color: #fff; font-weight: 500;
+  }
+  .nav-links .n1 { background: var(--ink); }
+  .nav-links .n2 { background: var(--red); }
+  .nav-links .n3 { background: var(--yellow); color: var(--ink); }
+  .nav-links .n4 { background: var(--blue); }
+  .nav-links a:hover { filter: brightness(1.12); }
+
+  /* ============ 3. Schmidt 海报 Hero：主角几何 ============ */
+  .hero { position: relative; border-bottom: var(--rule-bold); overflow: hidden; }
+  .hero-grid {
+    display: grid; grid-template-columns: repeat(12, 1fr);
+    min-height: 78vh; align-items: center;
+  }
+  .hero-copy { grid-column: 1 / span 6; padding-block: 64px; position: relative; z-index: 2; }
+  .hero-copy .label { display: inline-block; border-bottom: 3px solid var(--yellow); padding-bottom: 6px; margin-bottom: 24px; }
+  .hero-copy h1 { text-transform: uppercase; max-width: 10ch; }
+  .hero-copy p { max-width: 30em; margin-top: 20px; font-size: 1.125rem; }
+  .hero-cta { margin-top: 32px; }
+  .btn {
+    display: inline-block; background: var(--ink); color: var(--paper);
+    padding: 16px 32px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+    transition: background 80ms;
+  }
+  .btn:hover { background: var(--red); }
+
+  /* 主角几何：红方上的 45° 黄三角 + 蓝圆（Kandinsky 配对） */
+  .hero-geo { grid-column: 7 / span 6; position: relative; min-height: 420px; }
+  .geo-square {
+    position: absolute; right: 8%; top: 50%;
+    width: min(24vw, 300px); aspect-ratio: 1;
+    background: var(--red);
+    transform: translateY(-50%);
+  }
+  .geo-triangle {
+    position: absolute; right: calc(8% + min(24vw, 300px) - 90px); top: 50%;
+    width: 0; height: 0;
+    border-left: 90px solid transparent;
+    border-right: 90px solid transparent;
+    border-bottom: 156px solid var(--yellow);   /* 等边三角 ≈ 边长×0.866 */
+    transform: translateY(-78%) rotate(-45deg);
+    transform-origin: center;
+  }
+  .geo-circle {
+    position: absolute; right: calc(8% + min(24vw, 300px) / 2 - 70px); bottom: 6%;
+    width: 140px; aspect-ratio: 1;
+    background: var(--blue); border-radius: 50%;
+  }
+
+  /* ============ 4. 楔形分割带：45° 旋转方阵 ============ */
+  .wedge { height: 120px; background: var(--yellow); border-bottom: var(--rule-bold); overflow: hidden; position: relative; }
+  .wedge::before {
+    content: ""; position: absolute; left: -40px; top: -80px;
+    width: 280px; height: 280px;
+    background: var(--red); transform: rotate(45deg);
+  }
+  .wedge::after {
+    content: ""; position: absolute; right: -60px; bottom: -140px;
+    width: 280px; height: 280px;
+    background: var(--blue); transform: rotate(45deg);
+  }
+
+  /* ============ 5. Bento 几何卡组：形状即课程隐喻 ============ */
+  .courses { padding-block: 96px; }
+  .course-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 48px; gap: 16px; flex-wrap: wrap; }
+  .course-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .course {
+    border: var(--rule); background: var(--surface);
+    padding: 32px; min-height: 320px;
+    display: flex; flex-direction: column;
+    transition: transform 120ms;
+  }
+  .course:hover { transform: translate(-2px, -2px); box-shadow: var(--shadow); }
+  .course .shape { width: 96px; height: 96px; margin-bottom: 24px; }
+  .shape.circle    { background: var(--blue); border-radius: 50%; }
+  .shape.square    { background: var(--red); }
+  .shape.triangle  { width: 0; height: 0; border-left: 55px solid transparent; border-right: 55px solid transparent; border-bottom: 95px solid var(--yellow); }
+  .course h3 { font-size: 1.375rem; }
+  .course .de { font-weight: 300; letter-spacing: 0.12em; text-transform: uppercase; font-size: 0.875rem; display: block; margin-bottom: 4px; }
+  .course p { margin-top: 12px; color: #333; flex: 1; }
+  .course .idx { font-weight: 900; font-size: 0.875rem; letter-spacing: 0.12em; margin-top: 16px; }
+
+  /* ============ 6. 数据几何徽章 ============ */
+  .stats { border-block: var(--rule-bold); background: var(--ink); color: var(--paper); }
+  .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; padding-block: 64px; }
+  .stat { text-align: left; }
+  .stat .coin {
+    width: 112px; aspect-ratio: 1; border-radius: 50%;
+    background: var(--blue);
+    display: grid; place-items: center;
+    font-weight: 900; font-size: 1.75rem;
+    border: 3px solid var(--paper);
+    margin-bottom: 16px;
+  }
+  .stat:nth-child(2) .coin { background: var(--red); }
+  .stat:nth-child(3) .coin { background: var(--yellow); color: var(--ink); }
+  .stat .what { font-size: 0.875rem; letter-spacing: 0.12em; text-transform: uppercase; color: #bbb; }
+
+  /* ============ 7. 规则线课程目录 ============ */
+  .index { padding-block: 96px; }
+  .index-list { list-style: none; }
+  .index-list a {
+    display: grid; grid-template-columns: 6rem 1fr auto;
+    align-items: baseline; gap: 24px;
+    padding-block: 24px;
+    border-top: 2px solid var(--ink);
+    transition: background 80ms, color 80ms;
+  }
+  .index-list li:last-child a { border-bottom: 2px solid var(--ink); }
+  .index-list .no { font-weight: 900; font-size: 2rem; }
+  .index-list .go { font-weight: 500; letter-spacing: 0.12em; }
+  .index-list a:hover { background: var(--ink); color: var(--paper); }
+
+  /* ============ 8. Footer ============ */
+  footer { background: var(--ink); color: var(--paper); border-top: 4px solid var(--yellow); }
+  .foot-inner { padding-block: 64px 32px; display: flex; justify-content: space-between; gap: 32px; flex-wrap: wrap; }
+  .foot-inner h3 { font-size: 1.5rem; font-weight: 900; }
+  .foot-inner address { font-style: normal; line-height: 1.8; color: #ccc; margin-top: 8px; }
+  .foot-inner .mail { display: inline-block; margin-top: 16px; border-bottom: 2px solid var(--yellow); padding-bottom: 2px; font-weight: 700; }
+  .colophon { border-top: 1px solid #444; padding-block: 16px 32px; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; font-size: 0.8125rem; color: #999; }
+
+  /* ============ 9. 响应式 ============ */
+  @media (max-width: 900px) {
+    .hero-grid { grid-template-columns: 1fr; min-height: 0; }
+    .hero-copy { grid-column: 1 / -1; padding-block: 56px 0; }
+    .hero-geo  { grid-column: 1 / -1; min-height: 320px; margin-top: 24px; }
+    .geo-square { right: 4%; }
+    .course-grid { grid-template-columns: 1fr; }
+    .course { min-height: 0; }
+    .stats-grid { grid-template-columns: 1fr; gap: 40px; }
+    .nav-links .n3, .nav-links .n4 { display: none; }
+    .wedge { height: 64px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .course, .index-list a, .btn { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="wordmark" href="#top">KHA·FORMWERK</a>
+    <nav aria-label="主导航">
+      <ul class="nav-links">
+        <li><a class="n1" href="#courses">课程</a></li>
+        <li><a class="n2" href="#index">作品集</a></li>
+        <li><a class="n3" href="#stats">关于</a></li>
+        <li><a class="n4" href="#join">报名</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- Schmidt 海报 Hero：红方 + 45° 黄三角 + 蓝圆 -->
+  <section class="hero">
+    <div class="container hero-grid">
+      <div class="hero-copy">
+        <span class="label">Design School — Est. 1919 Spirit</span>
+        <h1>Form folgt Funktion</h1>
+        <p>1919 年的几何，2026 年的界面。KHA Formwerk 是一间线上设计学校——我们教圆、方与三角如何组成可用的世界。</p>
+        <div class="hero-cta">
+          <a class="btn" href="#join" id="join">申请 2027 预科</a>
+        </div>
+      </div>
+      <div class="hero-geo" aria-hidden="true">
+        <div class="geo-square"></div>
+        <div class="geo-triangle"></div>
+        <div class="geo-circle"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 楔形分割带 -->
+  <div class="wedge" aria-hidden="true"></div>
+
+  <!-- 三原则：形状即课程隐喻 -->
+  <section id="courses" class="courses container">
+    <header class="course-head">
+      <h2>预科三课</h2>
+      <span class="label">Vorkurs — Foundation</span>
+    </header>
+    <div class="course-grid">
+      <article class="course">
+        <div class="shape circle" aria-hidden="true"></div>
+        <span class="de">Kreis</span>
+        <h3>空间</h3>
+        <p>圆是运动的起点。从网格、坐标与韵律开始，理解界面中的位置关系。</p>
+        <span class="idx num">01 / 12 周</span>
+      </article>
+      <article class="course">
+        <div class="shape square" aria-hidden="true"></div>
+        <span class="de">Quadrat</span>
+        <h3>材料</h3>
+        <p>方是静止的秩序。纸张、像素与栅格——亲手感受每一种介质的边界。</p>
+        <span class="idx num">02 / 12 周</span>
+      </article>
+      <article class="course">
+        <div class="shape triangle" aria-hidden="true"></div>
+        <span class="de">Dreieck</span>
+        <h3>节奏</h3>
+        <p>三角是方向的意志。斜线、旋转与动势，让构图从平衡走向表达。</p>
+        <span class="idx num">03 / 12 周</span>
+      </article>
+    </div>
+  </section>
+
+  <!-- 数据几何徽章 -->
+  <section id="stats" class="stats">
+    <div class="container stats-grid">
+      <div class="stat"><div class="coin num">1:7</div><div class="what">师生比</div></div>
+      <div class="stat"><div class="coin num">92%</div><div class="what">毕业就业率</div></div>
+      <div class="stat"><div class="coin num">31</div><div class="what">国际合作院校</div></div>
+    </div>
+  </section>
+
+  <!-- 规则线课程目录 -->
+  <section id="index" class="index container">
+    <header class="course-head">
+      <h2>本季目录</h2>
+      <span class="label">Index — 2026/27</span>
+    </header>
+    <ul class="index-list">
+      <li><a href="#courses"><span class="no num">01</span><span>版式基础 — Typografie</span><span class="go">→</span></a></li>
+      <li><a href="#courses"><span class="no num">02</span><span>色彩理论 — Farbtheorie</span><span class="go">→</span></a></li>
+      <li><a href="#courses"><span class="no num">03</span><span>构成练习 — Komposition</span><span class="go">→</span></a></li>
+      <li><a href="#courses"><span class="no num">04</span><span>界面几何 — Interface Geometry</span><span class="go">→</span></a></li>
+    </ul>
+  </section>
+
+</main>
+
+<footer>
+  <div class="container">
+    <div class="foot-inner">
+      <div>
+        <h3>KHA·FORMWERK</h3>
+        <address>
+          Gropiusallee 38<br>
+          06846 Dessau — Remote First
+        </address>
+      </div>
+      <div>
+        <span class="label">Admission</span><br>
+        <a class="mail" href="mailto:apply@formwerk.school">APPLY@FORMWERK.SCHOOL</a>
+      </div>
+    </div>
+    <div class="colophon">
+      <span>© 2026 KHA Formwerk. 艺术与技术的新统一。</span>
+      <span class="num">Kandinsky pairing: yellow ▲ / red ■ / blue ●</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

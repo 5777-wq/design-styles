@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEUE ATELIER — Swiss Style Template</title>
+<!--
+  瑞士国际主义风格起始模板（零依赖，可直接打开）
+  ─────────────────────────────────────────────
+  风格规则速记：
+  · 一切文字左对齐，禁止居中排版
+  · 圆角为 0；无渐变、无阴影、无发光
+  · 间距只用 4/8 的倍数；行高取 4 的倍数
+  · 一个字族、最多 3 个字重、一个强调色
+  · hairline 只做分隔，不做容器描边
+  深色模式：在 <html> 上加 data-theme="dark"
+  详见 design-styles skill 的 references/swiss.md
+-->
+<style>
+  /* ============ 1. 设计 Token ============ */
+  :root {
+    /* 配色「苏黎世纸白」 */
+    --bg:        #F7F6F2;
+    --surface:   #FFFFFF;
+    --fg:        #111111;
+    --fg-muted:  #4A4A45;
+    --fg-faint:  #6E6E67;
+    --hairline:  #DEDDD5;
+    --accent:    #E30613;   /* 唯一强调色，占屏 <5% */
+
+    /* 字体栈：西文在前，中文回落 */
+    --font: "Helvetica Neue", Helvetica, Arial,
+            "PingFang SC", "Hiragino Sans GB",
+            "Noto Sans SC", "Microsoft YaHei", sans-serif;
+
+    /* 字阶（clamp 流式） */
+    --fs-display: clamp(2.75rem, 1.2rem + 7.3vw, 8rem);
+    --fs-h1:      clamp(2.25rem, 1.739rem + 2.27vw, 3.5rem);
+    --fs-h2:      clamp(1.75rem, 1.443rem + 1.36vw, 2.5rem);
+    --fs-h3:      clamp(1.25rem, 1.148rem + 0.45vw, 1.5rem);
+    --fs-body:    clamp(1rem, 0.949rem + 0.23vw, 1.125rem);
+    --fs-caption: 0.8125rem;
+    --fs-micro:   clamp(0.6875rem, 0.676rem + 0.05vw, 0.75rem);
+
+    /* 间距（4/8 倍数） */
+    --s1: 4px;  --s2: 8px;  --s3: 16px; --s4: 24px;
+    --s5: 32px; --s6: 48px; --s7: 64px; --s8: 96px; --s9: 128px;
+
+    /* 网格 */
+    --container: 1440px;
+    --margin:    clamp(20px, 4.4vw, 64px);
+    --gutter:    clamp(16px, 1.67vw, 24px);
+
+    /* 动效：只允许位移与颜色，克制 */
+    --ease: cubic-bezier(0.25, 0, 0, 1);
+  }
+
+  /* 深色模式（非反色：深灰底、暖灰白字、强调色提亮） */
+  [data-theme="dark"] {
+    --bg:        #131312;
+    --surface:   #1C1C1A;
+    --fg:        #EAEAE6;
+    --fg-muted:  #A8A8A2;
+    --fg-faint:  #8A8A83;
+    --hairline:  #2E2E2B;
+    --accent:    #FF4F00;
+  }
+
+  /* ============ 2. 基础 ============ */
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--font);
+    font-size: var(--fs-body);
+    line-height: 1.75;              /* 含中文正文 1.7–1.8 */
+    color: var(--fg);
+    background: var(--bg);
+    -webkit-font-smoothing: antialiased;
+    font-synthesis: none;           /* 禁止伪造斜体/字重（中文无真斜体） */
+  }
+
+  /* 一切文字左对齐——瑞士第一铁律 */
+  h1, h2, h3, p, ul, ol, figure { text-align: left; }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+    text-underline-offset: 4px;
+  }
+  a:hover { color: var(--accent); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  /* 微标签：全大写 + 正字距，瑞士的索引语言 */
+  .micro {
+    font-size: var(--fs-micro);
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    line-height: 1.2;
+    color: var(--fg-faint);
+  }
+  .micro .num { color: var(--accent); }
+
+  /* 数字一律等宽（tabular nums） */
+  .num, .index, time, .data dt, .data dd {
+    font-variant-numeric: tabular-nums;
+  }
+
+  .container {
+    max-width: var(--container);
+    margin-inline: auto;
+    padding-inline: var(--margin);
+  }
+
+  /* 12 列基础网格 */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    column-gap: var(--gutter);
+  }
+
+  /* ============ 3. 固定导航：词标 + 编号词表 ============ */
+  .nav {
+    position: fixed;
+    inset: 0 0 auto 0;
+    z-index: 10;
+    border-bottom: 1px solid var(--hairline);
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: blur(8px);
+  }
+  .nav-inner {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: baseline;
+    padding-block: var(--s3);
+  }
+  .wordmark {
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+  .nav-links {
+    display: flex;
+    gap: var(--s5);
+    list-style: none;
+  }
+  .nav-links a {
+    font-size: var(--fs-caption);
+    letter-spacing: 0.04em;
+  }
+  .nav-links .num {
+    color: var(--fg-faint);
+    margin-right: var(--s1);
+  }
+  .nav-links a:hover .num { color: var(--accent); }
+
+  /* ============ 4. Hero：超大左对齐标题 ============ */
+  .hero {
+    min-height: 88vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding-top: 20vh;
+    padding-bottom: var(--s8);
+  }
+  .hero .micro { display: block; margin-bottom: var(--s5); }
+  .hero h1 {
+    font-size: var(--fs-display);
+    font-weight: 700;
+    line-height: 1.02;
+    letter-spacing: -0.03em;        /* 混排中文时减半到 -0.015em */
+    max-width: 12ch;
+  }
+  .hero-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--s4);
+    margin-top: var(--s7);
+    padding-top: var(--s3);
+    border-top: 1px solid var(--hairline);
+  }
+
+  /* ============ 5. 章节头：编号 + hairline ============ */
+  section { padding-block: var(--s8); }
+  .section-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    border-top: 1px solid var(--fg);   /* 结构线用前景色，分隔线用 hairline */
+    padding-top: var(--s3);
+    margin-bottom: var(--s7);
+  }
+
+  /* ============ 6. Manifesto：8+4 不对称分栏 ============ */
+  .manifesto .grid { row-gap: var(--s5); }
+  .manifesto-statement {
+    grid-column: span 8;
+    font-size: var(--fs-h2);
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: -0.015em;
+    max-width: 28em;
+  }
+  .manifesto-note {
+    grid-column: 10 / span 3;
+    font-size: var(--fs-caption);
+    line-height: 1.6;
+    color: var(--fg-muted);
+  }
+
+  /* ============ 7. Work Index：行式列表替代卡片 ============ */
+  .work-list { list-style: none; }
+  .work-row {
+    display: grid;
+    grid-template-columns: 4rem 1fr auto 5rem;
+    align-items: baseline;
+    column-gap: var(--gutter);
+    padding-block: var(--s4);
+    border-top: 1px solid var(--hairline);
+  }
+  .work-row:last-child { border-bottom: 1px solid var(--hairline); }
+  .work-row .index {
+    font-size: var(--fs-caption);
+    color: var(--fg-faint);
+  }
+  .work-row .title {
+    font-size: var(--fs-h3);
+    font-weight: 600;
+    line-height: 1.25;
+    transition: transform 200ms var(--ease), color 120ms linear;
+  }
+  .work-row .cat, .work-row time {
+    font-size: var(--fs-caption);
+    color: var(--fg-muted);
+    letter-spacing: 0.02em;
+  }
+  .work-row time { text-align: right; }   /* 表格数字右对齐 */
+  .work-row:hover .title {
+    transform: translateX(8px);           /* 沿网格轴的整数位移，唯一动效 */
+    color: var(--accent);
+  }
+
+  /* ============ 8. About：5/7 分割 + sticky 标题 + hairline 数据 ============ */
+  .about-title {
+    grid-column: span 5;
+    align-self: start;
+    position: sticky;
+    top: 96px;
+  }
+  .about-title h2 {
+    font-size: var(--fs-h1);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+  }
+  .about-body {
+    grid-column: 6 / span 7;
+    max-width: 38em;                /* 中文每行 32–40 字 */
+  }
+  .about-body p + p { margin-top: var(--s4); }
+  .data {
+    margin-top: var(--s7);
+  }
+  .data-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    padding-block: var(--s3);
+    border-top: 1px solid var(--hairline);
+  }
+  .data dt {
+    font-size: var(--fs-caption);
+    color: var(--fg-muted);
+  }
+  .data dd {
+    font-size: var(--fs-h3);
+    font-weight: 600;
+    text-align: right;
+  }
+
+  /* ============ 9. Footer：最安静的区域 ============ */
+  footer {
+    border-top: 1px solid var(--fg);
+    padding-top: var(--s6);
+    padding-bottom: var(--s4);
+  }
+  .footer-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    column-gap: var(--gutter);
+    row-gap: var(--s5);
+  }
+  .footer-grid h3 {
+    font-size: var(--fs-micro);
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--fg-faint);
+    margin-bottom: var(--s3);
+  }
+  .footer-grid ul { list-style: none; }
+  .footer-grid li, .footer-grid address {
+    font-size: var(--fs-caption);
+    font-style: normal;
+    line-height: 1.9;
+  }
+  .footer-grid .mail {
+    font-size: var(--fs-h3);
+    font-weight: 600;
+  }
+  .colophon {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--s4);
+    margin-top: var(--s7);
+    padding-top: var(--s3);
+    border-top: 1px solid var(--hairline);
+    font-size: var(--fs-caption);
+    color: var(--fg-faint);
+  }
+
+  /* ============ 10. 响应式：塌缩保序，不牺牲层级 ============ */
+  @media (max-width: 900px) {
+    .manifesto-statement { grid-column: span 12; }
+    .manifesto-note      { grid-column: span 12; max-width: 38em; }
+    .about-title         { grid-column: span 12; position: static; }
+    .about-body          { grid-column: span 12; }
+    .footer-grid         { grid-template-columns: repeat(2, 1fr); }
+    .work-row            { grid-template-columns: 3rem 1fr auto; }
+    .work-row .cat       { display: none; }        /* 年份保留，类目让位 */
+  }
+  @media (max-width: 640px) {
+    /* 窄屏：词标与词表导航压缩到一行，字号降档不降对比度 */
+    .wordmark  { font-size: 0.875rem; }
+    .nav-links { gap: var(--s3); }
+    .nav-links a { font-size: 0.6875rem; letter-spacing: 0.02em; }
+    .hero      { min-height: 76vh; }
+    .hero-meta { flex-direction: column; gap: var(--s2); }
+    .work-row  { grid-template-columns: 3rem 1fr; row-gap: var(--s1); }
+    .work-row time { grid-column: 2; text-align: left; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .work-row .title { transition: color 120ms linear; }
+  }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="wordmark" href="#top">NEUE ATELIER<sup>®</sup></a>
+    <nav aria-label="主导航">
+      <ul class="nav-links">
+        <li><a href="#studio"><span class="num">01</span>工作室</a></li>
+        <li><a href="#work"><span class="num">02</span>作品</a></li>
+        <li><a href="#about"><span class="num">03</span>关于</a></li>
+        <li><a href="#contact"><span class="num">04</span>联系</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- Hero：整页最大的视觉元素是文字本身 -->
+  <section class="hero container">
+    <span class="micro">Portfolio — 2026 <span class="num">/</span> Zürich 47.3769° N, 8.5417° E</span>
+    <h1>Form follows content. 形式服从内容。</h1>
+    <div class="hero-meta">
+      <span class="micro">Graphic Design Studio</span>
+      <span class="micro">Est. 2018 — Zürich / Shanghai</span>
+    </div>
+  </section>
+
+  <!-- 01 工作室：8+4 不对称分栏 -->
+  <section id="studio" class="manifesto container" style="scroll-margin-top: 96px;">
+    <header class="section-head">
+      <span class="micro"><span class="num">(01)</span> Studio</span>
+      <span class="micro">Manifesto</span>
+    </header>
+    <div class="grid">
+      <p class="manifesto-statement">
+        网格不是限制，而是秩序的骨架。我们删去一切不承载信息的元素，
+        让排版自己成为界面——客观、精确、可被阅读。
+      </p>
+      <p class="manifesto-note">
+        工作室承接品牌识别、编辑设计与数字化产品界面。
+        我们相信设计是组织信息的纪律，而非装饰的艺术。
+      </p>
+    </div>
+  </section>
+
+  <!-- 02 作品：行式索引，行间 hairline -->
+  <section id="work" class="container" style="scroll-margin-top: 96px;">
+    <header class="section-head">
+      <span class="micro"><span class="num">(02)</span> Selected Work</span>
+      <span class="micro">2024 — 2026</span>
+    </header>
+    <ul class="work-list">
+      <li><a class="work-row" href="#work">
+        <span class="index">01</span>
+        <span class="title">Helvetia 字体样本册</span>
+        <span class="cat">Identity</span>
+        <time>2026</time>
+      </a></li>
+      <li><a class="work-row" href="#work">
+        <span class="index">02</span>
+        <span class="title">网格系统数字档案馆</span>
+        <span class="cat">Editorial / Web</span>
+        <time>2025</time>
+      </a></li>
+      <li><a class="work-row" href="#work">
+        <span class="index">03</span>
+        <span class="title">Kunsthalle 海报系列</span>
+        <span class="cat">Print</span>
+        <time>2025</time>
+      </a></li>
+      <li><a class="work-row" href="#work">
+        <span class="index">04</span>
+        <span class="title">单音乐器产品界面</span>
+        <span class="cat">Product</span>
+        <time>2024</time>
+      </a></li>
+    </ul>
+  </section>
+
+  <!-- 03 关于：5/7 分割 + sticky 标题 + hairline 数据行 -->
+  <section id="about" class="about container" style="scroll-margin-top: 96px;">
+    <header class="section-head">
+      <span class="micro"><span class="num">(03)</span> About</span>
+      <span class="micro">The Studio</span>
+    </header>
+    <div class="grid">
+      <div class="about-title">
+        <h2>少，<br>但是更好。</h2>
+      </div>
+      <div class="about-body">
+        <p>
+          Neue Atelier 是一间位于苏黎世与上海的设计工作室。我们沿用
+          1950 年代瑞士学派的纪律：以网格组织信息，以无衬线字体传达，
+          以留白建立层级。设计不表达情绪，设计陈述事实。
+        </p>
+        <p>
+          我们为客户提供品牌识别、出版物与数字产品界面的长期设计伙伴关系。
+          每一个决策都必须回答同一个问题：它传达了什么信息。
+        </p>
+        <dl class="data">
+          <div class="data-row"><dt>成立年份</dt><dd>2018</dd></div>
+          <div class="data-row"><dt>已完成项目</dt><dd>64</dd></div>
+          <div class="data-row"><dt>国际奖项</dt><dd>12</dd></div>
+          <div class="data-row"><dt>团队成员</dt><dd>7</dd></div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- Footer：2–4 栏小字区，顶部结构线，colophon 收尾 -->
+<footer id="contact">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <h3>联系</h3>
+        <a class="mail" href="mailto:hello@neue-atelier.ch">hello@neue-atelier.ch</a>
+      </div>
+      <div>
+        <h3>地址</h3>
+        <address>
+          Hardturmstrasse 161<br>
+          8005 Zürich<br>
+          Schweiz
+        </address>
+      </div>
+      <div>
+        <h3>社交</h3>
+        <ul>
+          <li><a href="#contact">Instagram</a></li>
+          <li><a href="#contact">Are.na</a></li>
+          <li><a href="#contact">LinkedIn</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>订阅</h3>
+        <ul>
+          <li><a href="#contact">Newsletter</a></li>
+          <li><a href="#contact">RSS</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="colophon">
+      <span>© 2026 Neue Atelier. All rights reserved.</span>
+      <span>Set in Helvetica Neue 与思源黑体 — Built on a 12-column grid.</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

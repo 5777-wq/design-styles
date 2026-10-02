@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bulldozer — Neubrutalism Template</title>
+<!--
+  新粗野主义风格起始模板（零构建，可直接打开）
+  ─────────────────────────────────────────────
+  风格规则速记：
+  · 描边只用 2/3/4px 纯黑实线；阴影 blur=0，方向恒右下
+  · hover 抬起 (-2px,-2px)+阴影加深；active 按入 (位移=阴影 offset，阴影归零)
+  · 禁渐变、禁中间态圆角；撞色 ≤4 色相 + 黑白
+  · 正文深色字 on 米白；高饱和底只给小组件与标题块
+  · 展示字体全大写，等宽字体做 kicker/label/meta
+  字体 Archivo Black / Space Grotesk / Space Mono 走 Google Fonts，离线回退系统字体
+  详见 design-styles skill 的 references/neubrutalism.md
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  /* ============ 1. 设计 Token ============ */
+  :root {
+    --bg:      #FFFDF5;
+    --primary: #FFD23F;   /* 经典黄 */
+    --accent:  #FF6B6B;
+    --accent-2:#B8B8FF;
+    --ink:     #000000;
+
+    --font-display: "Archivo Black", "Arial Black", "Microsoft YaHei", sans-serif;
+    --font-head:    "Space Grotesk", "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    --font-body:    "Inter", "Helvetica Neue", Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
+    --font-mono:    "Space Mono", "Courier New", monospace;
+
+    --b2: 2px solid var(--ink);
+    --b3: 3px solid var(--ink);
+    --b4: 4px solid var(--ink);
+    --sh-sm: 3px 3px 0 0 var(--ink);
+    --sh-md: 5px 5px 0 0 var(--ink);
+    --sh-lg: 7px 7px 0 0 var(--ink);
+    --sh-xl: 12px 12px 0 0 var(--ink);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body { font-family: var(--font-body); font-size: 1.0625rem; line-height: 1.65; color: var(--ink); background: var(--bg); }
+
+  a { color: inherit; text-decoration: none; }
+  :focus-visible { outline: 3px solid #74B9FF; outline-offset: 3px; }
+
+  .container { max-width: 1200px; margin-inline: auto; padding-inline: clamp(16px, 4vw, 32px); }
+
+  h1, h2 { font-family: var(--font-display); font-weight: 400; line-height: 1.05; text-transform: uppercase; }
+  h2 { font-size: clamp(1.75rem, 4vw, 2.75rem); }
+
+  .kicker { font-family: var(--font-mono); font-size: 0.875rem; letter-spacing: 0.05em; text-transform: uppercase; }
+  .mono   { font-family: var(--font-mono); }
+
+  /* 物理按钮：hover 抬起 / active 按灭 */
+  .btn {
+    display: inline-block;
+    font-family: var(--font-head); font-weight: 700;
+    padding: 12px 24px;
+    border: var(--b3); box-shadow: var(--sh-md);
+    transition: transform 120ms, box-shadow 120ms;
+    cursor: pointer;
+  }
+  .btn:hover  { transform: translate(-2px, -2px); box-shadow: var(--sh-lg); }
+  .btn:active { transform: translate(5px, 5px);  box-shadow: none; }
+  .btn.primary { background: var(--primary); }
+  .btn.ghost   { background: #fff; }
+
+  /* 贴纸 badge */
+  .sticker {
+    display: inline-block;
+    font-family: var(--font-mono); font-weight: 700; font-size: 0.75rem;
+    border: var(--b2); box-shadow: var(--sh-sm);
+    padding: 6px 12px; background: #fff;
+    transform: rotate(3deg);
+  }
+
+  /* ============ 2. 导航 ============ */
+  .nav { background: #fff; border-bottom: var(--b4); position: sticky; top: 0; z-index: 10; }
+  .nav-inner { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 16px; }
+  .logo { font-family: var(--font-display); font-size: 1.25rem; text-transform: uppercase; }
+  .logo span { color: var(--accent); }
+  .nav-links { display: flex; gap: 24px; list-style: none; font-family: var(--font-mono); font-size: 0.875rem; text-transform: uppercase; }
+  .nav-links a:hover { background: var(--primary); }
+
+  /* ============ 3. 海报式 Hero ============ */
+  .hero { padding-block: 96px 72px; border-bottom: var(--b4); background: var(--bg); }
+  .hero .kicker { display: inline-block; background: var(--accent-2); border: var(--b2); box-shadow: var(--sh-sm); padding: 6px 12px; margin-bottom: 28px; }
+  .hero h1 { font-size: clamp(2.75rem, 7vw, 5.5rem); max-width: 14ch; }
+  .hero h1 .hl { background: var(--primary); padding-inline: 8px; display: inline-block; transform: rotate(-1deg); }
+  .hero p { max-width: 36em; margin-top: 24px; font-size: 1.125rem; }
+  .hero-cta { margin-top: 32px; display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
+  .hero .sticker { position: absolute; right: clamp(16px, 6vw, 96px); top: 120px; }
+  .hero-inner { position: relative; }
+
+  /* 信任行：等宽文本墙替代 logo 墙 */
+  .trust { border-bottom: var(--b4); background: #fff; }
+  .trust-inner { padding-block: 16px; font-family: var(--font-mono); font-size: 0.8125rem; text-transform: uppercase; letter-spacing: 0.05em; color: #333; }
+
+  /* ============ 4. 硬边框卡片阵列 ============ */
+  .features { padding-block: 88px; }
+  .feature-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 40px; }
+  .card {
+    border: var(--b3); box-shadow: var(--sh-md);
+    padding: 28px;
+    transition: transform 120ms, box-shadow 120ms;
+  }
+  .card:hover { transform: translate(-2px, -2px); box-shadow: var(--sh-lg); }
+  .card .tag { display: inline-block; font-family: var(--font-mono); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; border: var(--b2); padding: 4px 10px; margin-bottom: 16px; }
+  .card.c1 { background: var(--primary); }
+  .card.c2 { background: #fff; }
+  .card.c3 { background: var(--accent); }
+  .card h3 { font-family: var(--font-head); font-weight: 700; font-size: 1.25rem; margin-bottom: 8px; }
+  .card p { font-size: 0.9375rem; }
+
+  /* ============ 5. 终端面板 ============ */
+  .terminal-section { padding-block: 0 88px; }
+  .terminal {
+    background: var(--ink); color: #88D498;
+    border: var(--b4); box-shadow: var(--sh-xl);
+    font-family: var(--font-mono); font-size: 0.9375rem;
+    padding: 0;
+  }
+  .terminal .bar { display: flex; gap: 8px; align-items: center; background: #fff; border-bottom: var(--b3); padding: 10px 16px; }
+  .terminal .bar i { width: 14px; height: 14px; border: 2px solid var(--ink); border-radius: 50%; }
+  .terminal .bar i:nth-child(1) { background: var(--accent); }
+  .terminal .bar i:nth-child(2) { background: var(--primary); }
+  .terminal .bar i:nth-child(3) { background: #88D498; }
+  .terminal pre { padding: 24px; overflow-x: auto; line-height: 1.7; }
+  .terminal .cmt { color: #777; }
+
+  /* ============ 6. 暴露表格 ============ */
+  .pricing { padding-block: 88px; border-block: var(--b4); background: #fff; }
+  .price-table { width: 100%; border-collapse: collapse; margin-top: 40px; position: relative; }
+  .price-table th, .price-table td { border: var(--b2); padding: 16px 20px; text-align: left; }
+  .price-table th { font-family: var(--font-mono); font-size: 0.8125rem; text-transform: uppercase; background: var(--accent-2); }
+  .price-table .price { font-family: var(--font-display); font-size: 1.5rem; font-variant-numeric: tabular-nums; }
+  .price-table tr.hot td { background: var(--primary); }
+  .price-table .pick {
+    position: absolute; top: -16px; right: 8%;
+    font-family: var(--font-mono); font-weight: 700; font-size: 0.75rem;
+    background: #fff; border: var(--b2); box-shadow: var(--sh-sm);
+    padding: 6px 12px; transform: rotate(3deg); text-transform: uppercase;
+  }
+
+  /* ============ 7. CTA 满幅色块 ============ */
+  .cta { background: var(--primary); border-bottom: var(--b4); }
+  .cta-inner { padding-block: 96px; text-align: left; }
+  .cta h2 { font-size: clamp(2.25rem, 5vw, 3.5rem); max-width: 16ch; }
+  .cta p { margin-top: 16px; max-width: 30em; }
+  .cta .btn { margin-top: 28px; background: #fff; }
+
+  /* ============ 8. Footer ============ */
+  footer { background: var(--bg); }
+  .foot-inner { padding-block: 40px; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; font-family: var(--font-mono); font-size: 0.8125rem; text-transform: uppercase; letter-spacing: 0.05em; }
+
+  /* ============ 9. 响应式 ============ */
+  @media (max-width: 900px) {
+    .feature-grid { grid-template-columns: 1fr; }
+    .hero .sticker { position: static; display: inline-block; margin-top: 24px; }
+    /* 移动端阴影减半 */
+    .card, .btn { box-shadow: 3px 3px 0 0 var(--ink); }
+    .terminal { box-shadow: 6px 6px 0 0 var(--ink); }
+  }
+  @media (max-width: 640px) {
+    .nav-links { display: none; }
+    .hero { padding-block: 64px 56px; }
+    .price-table th:nth-child(3), .price-table td:nth-child(3) { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .btn, .card { transition: none; }
+    .btn:hover, .card:hover { transform: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="logo" href="#top">BULLDOZER<span>.</span></a>
+    <ul class="nav-links">
+      <li><a href="#features">功能</a></li>
+      <li><a href="#pricing">价格</a></li>
+      <li><a href="#top">文档</a></li>
+    </ul>
+    <a class="btn primary" href="#pricing">开始部署</a>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- 海报式 Hero -->
+  <section class="hero">
+    <div class="container hero-inner">
+      <span class="kicker">V2.0 — NOW IN PUBLIC BETA</span>
+      <h1>DEPLOY LIKE A <span class="hl">WRECKING BALL</span></h1>
+      <p>Bulldozer 是给独立开发者的部署工具：git push 之后的事全部交给我们——构建、边缘分发、回滚，一条命令都省了。</p>
+      <div class="hero-cta">
+        <a class="btn primary" href="#pricing">免费开炸</a>
+        <a class="btn ghost" href="#features">看看功能</a>
+      </div>
+      <span class="sticker">★ 10K STARS</span>
+    </div>
+  </section>
+
+  <!-- 信任行：等宽文本墙 -->
+  <div class="trust">
+    <div class="container trust-inner">
+      TRUSTED BY 4,200+ SOLO DEVS // 99.99% UPTIME // EDGE IN 32 REGIONS // ROLLBACK IN 1 CLICK
+    </div>
+  </div>
+
+  <!-- 硬边框卡片阵列 -->
+  <section id="features" class="features container">
+    <h2>三个轰炸级功能</h2>
+    <div class="feature-grid">
+      <article class="card c1">
+        <span class="tag">DEPLOY</span>
+        <h3>Push 即上线</h3>
+        <p>连接仓库后每次 push 自动构建部署，构建日志实时可看，平均 38 秒完成。</p>
+      </article>
+      <article class="card c2">
+        <span class="tag">EDGE</span>
+        <h3>32 区边缘分发</h3>
+        <p>静态与 SSR 内容自动推到离用户最近的节点，全球首屏 &lt;100ms。</p>
+      </article>
+      <article class="card c3">
+        <span class="tag">ROLLBACK</span>
+        <h3>一键回滚</h3>
+        <p>每次部署都是快照。出事？点一下回到上一个稳定版本，比道歉还快。</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- 终端面板 -->
+  <section class="terminal-section container">
+    <div class="terminal">
+      <div class="bar" aria-hidden="true"><i></i><i></i><i></i></div>
+      <pre><span class="cmt"># 把整个下午的运维压缩成一行</span>
+$ git push origin main
+▲ bulldozer: build started...
+▲ bulldozer: build finished in 38s
+▲ bulldozer: deployed to 32 edge regions
+<span style="color:#fff">✓ live at https://yourapp.dozer.app</span></pre>
+    </div>
+  </section>
+
+  <!-- 暴露表格 -->
+  <section id="pricing" class="pricing">
+    <div class="container">
+      <h2>价格表，全是实价</h2>
+      <table class="price-table">
+        <span class="pick">MOST POPULAR</span>
+        <thead>
+          <tr><th>方案</th><th>价格</th><th>包含</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Hobby</strong></td>
+            <td class="price">¥0</td>
+            <td class="mono">3 项目 / 100GB 流量 / 社区支持</td>
+          </tr>
+          <tr class="hot">
+            <td><strong>Pro</strong></td>
+            <td class="price">¥59/月</td>
+            <td class="mono">无限项目 / 1TB 流量 / 邮件支持</td>
+          </tr>
+          <tr>
+            <td><strong>Team</strong></td>
+            <td class="price">¥199/月</td>
+            <td class="mono">5 席位 / 预览环境 / SLA 99.99%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- CTA 满幅色块 -->
+  <section class="cta">
+    <div class="container cta-inner">
+      <h2>你的下一个部署，何必是折衷</h2>
+      <p>五分钟接入，第一条命令免费。推平部署这件事上的一切多余流程。</p>
+      <a class="btn" href="#top">现在开始 →</a>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="container foot-inner">
+    <span>© 2026 BULLDOZER INC.</span>
+    <span>BUILT WITH 3PX BORDERS & 0 BLUR</span>
+    <a href="#top">STATUS: ALL SYSTEMS GO ●</a>
+  </div>
+</footer>
+
+</body>
+</html>

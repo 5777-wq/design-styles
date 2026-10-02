@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>跳线市集 JUMPER FAIR — Memphis Template</title>
+<!--
+  孟菲斯风格起始模板（零构建，可直接打开）
+  ─────────────────────────────────────────────
+  风格规则速记：
+  · 装饰来自固定形状词汇表（本页 6 种），同形状至少出现 2 次
+  · 装饰层 absolute + pointer-events:none + aria-hidden，只在四角/标题旁/分界带
+  · 描边统一 3px 黑；阴影恒硬 6px 6px 0；禁渐变
+  · 同屏 3-4 个高饱和色 + 黑白压阵；背景只用米白/浅灰
+  · 倾斜只给装饰与 display（-6°~6°），正文永不倾斜
+  Display 字体 Righteous / Shrikhand 走 Google Fonts，离线回退系统字体
+  详见 design-styles skill 的 references/memphis.md
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Righteous&family=Shrikhand&family=Poppins:wght@400;600;700&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  /* ============ 1. 设计 Token ============ */
+  :root {
+    --primary:  #FF6B6B;   /* 珊瑚红 */
+    --accent-1: #4ECDC4;   /* 青 */
+    --accent-2: #FFD166;   /* 黄 */
+    --accent-3: #9B5DE5;   /* 紫，点缀 */
+    --ink:  #111111;
+    --bg:   #FAF3E7;       /* 米白 */
+
+    --font-display: "Shrikhand", "Righteous", "Arial Black", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+    --font-heavy:   "Righteous", "Arial Black", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+    --font-body:    "Poppins", "Helvetica Neue", Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
+
+    --border: 3px solid var(--ink);
+    --shadow-pop: 6px 6px 0 0 var(--ink);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: var(--font-body);
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    color: #1A1A1A;
+    background: var(--bg);
+    overflow-x: hidden;   /* 倾斜装饰防横向溢出 */
+  }
+
+  a { color: inherit; text-decoration: none; }
+  :focus-visible { outline: 3px solid var(--accent-3); outline-offset: 2px; }
+
+  .container { max-width: 1200px; margin-inline: auto; padding-inline: clamp(16px, 4vw, 32px); }
+
+  /* 中文标题 900 压得住几何图形；拉丁 display 字体本身仅 400，浏览器会轻微仿粗 */
+  h1, h2 { font-family: var(--font-heavy); font-weight: 900; line-height: 1.05; }
+  h2 { font-size: clamp(1.75rem, 3.5vw, 2.5rem); }
+  h3 { font-weight: 700; font-size: 1.125rem; }
+
+  .label { font-size: 0.8125rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+
+  /* 装饰层：永不参与交互 */
+  .deco { position: absolute; pointer-events: none; }
+
+  /* ============ 2. 形状词汇表（6 种） ============ */
+  .shape-dots {     /* 波点阵 */
+    background-image: radial-gradient(var(--ink) 4px, transparent 4.5px);
+    background-size: 24px 24px;
+  }
+  .shape-stripes {  /* 黑白斜条纹 */
+    background: repeating-linear-gradient(45deg, var(--ink) 0 10px, #fff 10px 20px);
+  }
+  .shape-squiggle { width: 72px; height: 24px; }
+  .shape-triangle {  /* CSS border 三角 */
+    width: 0; height: 0;
+    border-left: 28px solid transparent;
+    border-right: 28px solid transparent;
+    border-bottom: 48px solid var(--primary);
+  }
+  .shape-arc {      /* 半圆 */
+    width: 64px; height: 32px;
+    background: var(--accent-1);
+    border-radius: 999px 999px 0 0;
+    border: var(--border); border-bottom: none;
+  }
+  .shape-ring {     /* 圆环 */
+    width: 44px; height: 44px; border-radius: 50%;
+    border: 10px solid var(--accent-3);
+  }
+
+  /* ============ 3. 顶栏 ============ */
+  .topbar { background: var(--ink); color: #fff; }
+  .topbar-inner { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 16px; }
+  .wordmark { font-family: var(--font-display); font-size: 1.375rem; letter-spacing: 0.02em; }
+  .wordmark span { color: var(--accent-2); }
+  .btn {
+    display: inline-block;
+    background: var(--accent-2); color: var(--ink);
+    border: var(--border); border-radius: 999px;
+    box-shadow: var(--shadow-pop);
+    padding: 10px 24px; font-weight: 700;
+    transition: transform 120ms, box-shadow 120ms;
+  }
+  .btn:hover  { transform: translate(-2px, -2px); box-shadow: 8px 8px 0 0 var(--ink); }
+  .btn:active { transform: translate(3px, 3px);  box-shadow: 3px 3px 0 0 var(--ink); }
+
+  /* ============ 4. 爆炸 Hero：装饰簇 + 倾斜 display ============ */
+  .hero { position: relative; padding-block: 96px 88px; overflow: hidden; }
+  .hero .dots-bg {                                        /* 波点纹理层 */
+    position: absolute; inset: 0; opacity: 0.1; pointer-events: none;
+    background-image: radial-gradient(var(--ink) 4px, transparent 4.5px);
+    background-size: 24px 24px;
+  }
+  .hero h1 {
+    position: relative;
+    font-family: var(--font-display);
+    font-size: clamp(2.75rem, 7vw, 5.5rem);
+    transform: rotate(-2deg);
+    max-width: 14ch;
+  }
+  .hero h1 em { font-style: normal; color: var(--primary); }
+  .hero p { position: relative; max-width: 30em; margin-top: 20px; font-size: 1.125rem; }
+  .chips { position: relative; display: flex; gap: 12px; margin-top: 28px; flex-wrap: wrap; }
+  .chip {
+    border: var(--border); border-radius: 999px;
+    padding: 8px 18px; font-weight: 700; background: #fff;
+  }
+  .chip.c1 { background: var(--accent-1); }
+  .chip.c2 { background: var(--accent-2); }
+  /* 装饰簇 A（左上）与 B（右下） */
+  .cluster-a { top: 48px; left: 4%; transform: rotate(8deg); }
+  .cluster-a .shape-triangle { position: absolute; left: 90px; top: 40px; transform: rotate(24deg); }
+  .cluster-a .shape-ring { position: absolute; left: -10px; top: 84px; }
+  .cluster-b { bottom: 40px; right: 6%; transform: rotate(-6deg); }
+  .cluster-b .shape-squiggle { position: absolute; right: 110px; top: -30px; }
+  .cluster-b .shape-dots {
+    position: absolute; right: 0; top: 20px;
+    width: 110px; height: 110px; border-radius: 50%;
+    background-image: radial-gradient(var(--primary) 4px, transparent 4.5px);
+    background-size: 20px 20px;
+  }
+  /* hero 底部黑白条纹收边带 */
+  .stripe-band { position: absolute; left: 0; right: 0; bottom: 0; height: 14px; }
+
+  /* ============ 5. 跑马灯 ============ */
+  .marquee { background: var(--ink); color: #fff; overflow: hidden; white-space: nowrap; padding-block: 12px; font-weight: 700; }
+  .marquee-track { display: inline-block; animation: scroll 24s linear infinite; }
+  @keyframes scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  .marquee .sep { color: var(--accent-2); margin-inline: 16px; }
+
+  /* ============ 6. 贴纸卡片网格 ============ */
+  .stalls { padding-block: 80px; }
+  .stall-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; margin-top: 40px; }
+  .stall {
+    position: relative;
+    background: #fff; border: var(--border); box-shadow: var(--shadow-pop);
+    padding: 28px; padding-top: 40px;
+    transition: transform 120ms, box-shadow 120ms;
+  }
+  .stall:hover { transform: translate(-2px, -2px); box-shadow: 8px 8px 0 0 var(--ink); }
+  .stall .badge {                                /* 左上角旋转形状色标 */
+    position: absolute; top: -14px; left: 20px;
+    width: 36px; height: 36px;
+    transform: rotate(-4deg);
+    border: var(--border);
+  }
+  .stall:nth-child(1) .badge { background: var(--primary); border-radius: 50%; }
+  .stall:nth-child(2) .badge { background: var(--accent-1); }
+  .stall:nth-child(3) .badge { background: var(--accent-2); transform: rotate(45deg); }
+  .stall:nth-child(4) .badge { background: var(--accent-3); border-radius: 50%; }
+  .stall:nth-child(5) .badge { background: var(--primary); transform: rotate(8deg); }
+  .stall:nth-child(6) .badge { background: var(--accent-1); transform: rotate(-12deg); }
+  .stall p { margin-top: 8px; font-size: 0.9375rem; color: #444; }
+
+  /* ============ 7. 锯齿拼色分屏 ============ */
+  .stages { position: relative; }
+  .zigzag-top {                                    /* 锯齿边缘带 */
+    height: 48px;
+    background: var(--accent-1);
+    clip-path: polygon(0 100%, 0 60%, 4% 100%, 8% 60%, 12% 100%, 16% 60%, 20% 100%, 24% 60%, 28% 100%, 32% 60%, 36% 100%, 40% 60%, 44% 100%, 48% 60%, 52% 100%, 56% 60%, 60% 100%, 64% 60%, 68% 100%, 72% 60%, 76% 100%, 80% 60%, 84% 100%, 88% 60%, 92% 100%, 96% 60%, 100% 100%, 100% 60%, 100% 0, 0 0);
+  }
+  .stage-split { display: grid; grid-template-columns: 55fr 45fr; }
+  .stage { padding: 64px clamp(20px, 5vw, 64px); color: var(--ink); }
+  .stage.s1 { background: var(--accent-1); }
+  .stage.s2 { background: var(--primary); }
+  .stage h3 { font-family: var(--font-heavy); font-weight: 400; font-size: 1.75rem; }
+  .stage p { max-width: 28em; margin-top: 12px; }
+  .stage .when { display: inline-block; background: #fff; border: var(--border); padding: 6px 16px; margin-top: 20px; font-weight: 700; }
+
+  /* ============ 8. 票券区 ============ */
+  .tickets { padding-block: 80px; }
+  .ticket-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 40px; align-items: start; }
+  .ticket {
+    background: #fff; border: var(--border); box-shadow: var(--shadow-pop);
+    padding: 28px;
+  }
+  .ticket.hot { background: var(--accent-2); transform: scale(1.04); }
+  .ticket .tier { display: flex; justify-content: space-between; align-items: baseline; }
+  .ticket .price { font-family: var(--font-heavy); font-size: 2rem; font-variant-numeric: tabular-nums; border-top: 2px dashed var(--ink); margin-top: 16px; padding-top: 16px; }
+  .ticket ul { list-style: none; margin-top: 16px; }
+  .ticket li { display: flex; gap: 10px; align-items: baseline; margin-top: 8px; font-size: 0.9375rem; }
+  .ticket li::before { content: ""; width: 12px; height: 12px; flex: none; background: var(--primary); }
+  .ticket:nth-child(2) li::before { background: var(--accent-1); border-radius: 50%; }
+  .ticket:nth-child(3) li::before { background: var(--accent-3); transform: rotate(45deg); }
+  .sticker-note {
+    display: inline-block; background: #fff; border: 2px solid var(--ink);
+    box-shadow: 4px 4px 0 0 var(--ink);
+    transform: rotate(-3deg);
+    padding: 4px 12px; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.06em;
+  }
+
+  /* ============ 9. 图形 bullet 须知 ============ */
+  .notes { padding-block: 0 88px; }
+  .notes ul { list-style: none; margin-top: 24px; max-width: 640px; }
+  .notes li { display: flex; gap: 14px; align-items: baseline; margin-top: 18px; line-height: 1.9; }
+  .notes .b { flex: none; width: 16px; height: 16px; position: relative; top: 2px; }
+  .notes li:nth-child(1) .b { background: var(--primary); }
+  .notes li:nth-child(2) .b { background: var(--accent-1); border-radius: 50%; }
+  .notes li:nth-child(3) .b { background: var(--accent-2); transform: rotate(45deg); }
+  .notes li:nth-child(4) .b { background: var(--accent-3); border-radius: 50% 50% 0 0; }
+
+  /* ============ 10. Footer ============ */
+  footer { position: relative; background: var(--ink); color: #fff; padding-block: 64px 32px; overflow: hidden; }
+  .foot-zigzag {
+    position: absolute; top: -1px; left: 0; right: 0; height: 32px;
+    background: var(--bg);
+    clip-path: polygon(0 0, 100% 0, 100% 40%, 96% 100%, 92% 40%, 88% 100%, 84% 40%, 80% 100%, 76% 40%, 72% 100%, 68% 40%, 64% 100%, 60% 40%, 56% 100%, 52% 40%, 48% 100%, 44% 40%, 40% 100%, 36% 40%, 32% 100%, 28% 40%, 24% 100%, 20% 40%, 16% 100%, 12% 40%, 8% 100%, 4% 40%, 0 100%);
+  }
+  .foot-grid { position: relative; display: flex; justify-content: space-between; gap: 32px; flex-wrap: wrap; }
+  .foot-grid h3 { color: var(--accent-2); }
+  .foot-grid ul { list-style: none; line-height: 2.1; }
+  .foot-dots {
+    position: absolute; right: 4%; bottom: 24px;
+    width: 120px; height: 64px; opacity: 0.35;
+    background-image: radial-gradient(#fff 3px, transparent 3.5px);
+    background-size: 18px 18px;
+  }
+  .colophon { position: relative; margin-top: 40px; padding-top: 16px; border-top: 1px solid #444; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; font-size: 0.8125rem; color: #bbb; }
+
+  /* ============ 11. 响应式 ============ */
+  @media (max-width: 900px) {
+    .stall-grid { grid-template-columns: repeat(2, 1fr); }
+    .stage-split { grid-template-columns: 1fr; }
+    .ticket-grid { grid-template-columns: 1fr; }
+    .ticket.hot { transform: none; }
+    .cluster-a { left: -20px; }
+    .cluster-b { display: none; }        /* 移动端装饰减半 */
+  }
+  @media (max-width: 640px) {
+    .stall-grid { grid-template-columns: 1fr; }
+    .hero { padding-block: 64px 72px; }
+    .hero .dots-bg { background-size: 16px 16px; }
+    .topbar .btn { padding: 8px 16px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .marquee-track { animation: none; }
+    .btn, .stall, .ticket { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="container topbar-inner">
+    <a class="wordmark" href="#top">跳线市集<span>!</span></a>
+    <a class="btn" href="#tickets">购票</a>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- 爆炸 Hero：密度峰值，向下递减 -->
+  <section class="hero">
+    <div class="dots-bg" aria-hidden="true"></div>
+    <!-- 装饰簇 A（左上）：三角 + 圆环 + squiggle -->
+    <div class="deco cluster-a" aria-hidden="true">
+      <div class="shape-triangle"></div>
+      <div class="shape-ring"></div>
+      <svg class="shape-squiggle" viewBox="0 0 72 24" fill="none" aria-hidden="true">
+        <path d="M2 12 Q9 2 16 12 T30 12 T44 12 T58 12 T72 12" stroke="#111" stroke-width="3" stroke-linecap="round" fill="none"/>
+      </svg>
+    </div>
+    <!-- 装饰簇 B（右下）：squiggle + 波点圆 -->
+    <div class="deco cluster-b" aria-hidden="true">
+      <svg class="shape-squiggle" viewBox="0 0 72 24" fill="none" aria-hidden="true">
+        <path d="M2 12 Q9 22 16 12 T30 12 T44 12 T58 12 T72 12" stroke="#FF6B6B" stroke-width="3" stroke-linecap="round" fill="none"/>
+      </svg>
+      <div class="shape-dots"></div>
+    </div>
+    <div class="container">
+      <h1>把无聊摁进<em>碎纸机</em></h1>
+      <p>50+ 独立创作者、现场丝网印刷、黑胶市集与深夜场——一年只热闹这两个周末。</p>
+      <div class="chips">
+        <span class="chip c1 num">11.14 — 11.15</span>
+        <span class="chip c2">西岸货柜码头</span>
+      </div>
+    </div>
+    <div class="stripe-band shape-stripes" aria-hidden="true"></div>
+  </section>
+
+  <!-- 跑马灯 -->
+  <div class="marquee" aria-hidden="true">
+    <span class="marquee-track">50+ 独立创作者<span class="sep">✦</span>现场丝网印刷<span class="sep">✦</span>黑胶市集<span class="sep">✦</span>深夜场至 23:00<span class="sep">✦</span>50+ 独立创作者<span class="sep">✦</span>现场丝网印刷<span class="sep">✦</span>黑胶市集<span class="sep">✦</span>深夜场至 23:00<span class="sep">✦</span>&nbsp;</span>
+  </div>
+
+  <!-- 摊位贴纸卡 -->
+  <section id="stalls" class="stalls container">
+    <h2>六种逛法</h2>
+    <div class="stall-grid">
+      <article class="stall"><span class="badge" aria-hidden="true"></span><h3>现场演出</h3><p>三支本地乐队轮番上阵，观众席就是舞池。</p></article>
+      <article class="stall"><span class="badge" aria-hidden="true"></span><h3>丝网印刷工坊</h3><p>带上旧 T 恤，把它变成限量款。</p></article>
+      <article class="stall"><span class="badge" aria-hidden="true"></span><h3>古着专区</h3><p>80 年代运动服与绝版牛仔裤按斤称。</p></article>
+      <article class="stall"><span class="badge" aria-hidden="true"></span><h3>食物车</h3><p>烤冷面、可丽饼与精酿，热量的意义。</p></article>
+      <article class="stall"><span class="badge" aria-hidden="true"></span><h3>插画墙</h3><p>40 位插画师的现场笔绘，先到先得。</p></article>
+      <article class="stall"><span class="badge" aria-hidden="true"></span><h3>二手书摊</h3><p>按封面颜值定价，随缘文学。</p></article>
+    </div>
+  </section>
+
+  <!-- 锯齿拼色分屏：三大舞台 -->
+  <section id="stages" class="stages">
+    <div class="zigzag-top" aria-hidden="true"></div>
+    <div class="stage-split">
+      <div class="stage s1">
+        <h3>主舞台 · 码头</h3>
+        <p>开阔江风配大音箱。傍晚 6 点后灯光全开，乐队依次登场。</p>
+        <span class="when num">周六 14:00 — 23:00</span>
+      </div>
+      <div class="stage s2">
+        <h3>耳机舞台 · 仓库</h3>
+        <p>一人一副耳机安静的蹦迪，频道随你切，派对不打扰。</p>
+        <span class="when num">周日 13:00 — 21:00</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 票券 -->
+  <section id="tickets" class="tickets container">
+    <h2>选一张你的票</h2>
+    <div class="ticket-grid">
+      <div class="ticket">
+        <div class="tier"><h3>单日票</h3><span class="sticker-note">自选一天</span></div>
+        <div class="price">¥88</div>
+        <ul>
+          <li>任选一天入场</li>
+          <li>含一枚纪念贴纸</li>
+        </ul>
+      </div>
+      <div class="ticket hot">
+        <div class="tier"><h3>双日通票</h3><span class="sticker-note">最划算!</span></div>
+        <div class="price">¥148</div>
+        <ul>
+          <li>两日全场通用</li>
+          <li>含帆布袋 + 贴纸组</li>
+          <li>耳机舞台优先入场</li>
+        </ul>
+      </div>
+      <div class="ticket">
+        <div class="tier"><h3>夜猫票</h3><span class="sticker-note">18:00 后</span></div>
+        <div class="price">¥68</div>
+        <ul>
+          <li>晚间场入场</li>
+          <li>含一杯精酿</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 须知：图形 bullet -->
+  <section class="notes container">
+    <h2>逛集须知</h2>
+    <ul>
+      <li><span class="b" aria-hidden="true"></span>宠物友好，但请牵好你的狗和你的朋友。</li>
+      <li><span class="b" aria-hidden="true"></span>支持支付宝 / 微信 / 现金，摊主可能没零钱。</li>
+      <li><span class="b" aria-hidden="true"></span>雨天照常开集，货柜连成一条雨廊。</li>
+      <li><span class="b" aria-hidden="true"></span>地铁 11 号线云锦路站 3 号口，步行 6 分钟。</li>
+    </ul>
+  </section>
+
+</main>
+
+<footer>
+  <div class="foot-zigzag" aria-hidden="true"></div>
+  <div class="container">
+    <div class="foot-grid">
+      <div>
+        <h3>跳线市集!</h3>
+        <ul>
+          <li><a href="#top">摊主报名</a></li>
+          <li><a href="#top">志愿者招募</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>联系</h3>
+        <ul>
+          <li><a href="mailto:hi@jumperfair.cn">hi@jumperfair.cn</a></li>
+          <li>微信公众号：跳线市集</li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-dots" aria-hidden="true"></div>
+    <div class="colophon">
+      <span>© 2026 跳线市集 JUMPER FAIR</span>
+      <span>Set in Shrikhand & Poppins — Memphis since 1981</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

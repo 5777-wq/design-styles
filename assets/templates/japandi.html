@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>白鷺園 — Japandi Template</title>
+<!--
+  日式侘寂 / Japandi 风格起始模板（零构建，可直接打开）
+  ─────────────────────────────────────────────
+  风格规则速记：
+  · 每屏空白 ≥50%，一屏一意；空白是「间」，不是未完成
+  · 全站明朝体/衬线，禁 700+ 粗体；层级靠留白与 1px 细线
+  · 全站 ≤4 色：纸底 + 墨字 + 藍鼠点缀 + 臙脂印章（面积 ≤32px）
+  · 禁阴影、禁渐变、禁重底色块；圆角 0–2px
+  · 竖排只做落款（每页 ≤2 处、≤12 字），正文永远横排
+  · 动效慢半拍（≥400ms ease-out 淡入），禁弹跳
+  · 全局纸纹噪点 3-6%；摄影请替换为自然光材质空景（现为 CSS 占位）
+  字体 Noto Serif SC / Cormorant Garamond / Shippori Mincho 走 Google Fonts
+  详见 design-styles skill 的 references/japandi.md
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Noto+Serif+SC:wght@200;300;400;500&family=Shippori+Mincho:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* ============ 1. 设计 Token ============ */
+  :root {
+    --paper:  #F7F3EC;              /* 生成り kinari */
+    --card:   #FDFCF8;              /* 胡粉 gofun */
+    --ink:    #26231F;              /* 墨 sumi */
+    --ink-2:  #1A1A18;
+    --nibi:   #6E6A61;              /* 鈍 nibi 次级文字 */
+    --line:   rgba(38,35,31,.16);   /* hairline */
+    --ainezu: #6C848D;              /* 藍鼠 ainezu 点缀 */
+    --enji:   #B94047;              /* 臙脂 enji 印章 */
+
+    --serif: "Cormorant Garamond", "Noto Serif SC", "Shippori Mincho", "SimSun", "宋体", serif;
+    --sans:  "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+    --ease: cubic-bezier(.16, 1, .3, 1);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 1rem;
+    line-height: 2.0;
+    letter-spacing: 0.05em;
+    color: var(--ink);
+    background: var(--paper);
+  }
+
+  /* 全局纸纹肌理：feTurbulence 噪点，3-6% */
+  body::after {
+    content: ""; position: fixed; inset: 0; z-index: 999;
+    pointer-events: none; opacity: 0.05; mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  a { color: inherit; text-decoration: none; }
+  a:hover { opacity: 0.7; }
+  :focus-visible { outline: 1px solid var(--ink); outline-offset: 4px; }
+
+  .container { max-width: 1160px; margin-inline: auto; padding-inline: clamp(20px, 5vw, 56px); }
+
+  h1, h2, h3 { font-weight: 400; }        /* 禁 700+ 粗体：明朝体粗即凶 */
+  h2 { font-size: 1.875rem; letter-spacing: 0.12em; }
+  h3 { font-size: 1.25rem; letter-spacing: 0.08em; }
+
+  .num { font-variant-numeric: tabular-nums; }
+
+  /* 西文小标签 */
+  .en {
+    font-family: var(--serif);
+    font-size: 0.6875rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--nibi);
+  }
+
+  /* 竖排：只做落款与 hero 标题 */
+  .vertical {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    letter-spacing: 0.35em;
+    line-height: 2.2;
+  }
+
+  /* ============ 2. 极简导航 ============ */
+  .nav {
+    position: fixed; inset: 0 0 auto 0; z-index: 10;
+    background: rgba(247,243,236,0.92);
+    -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav-inner { display: flex; align-items: baseline; justify-content: space-between; height: 64px; align-items: center; }
+  .wordmark { font-size: 1.25rem; letter-spacing: 0.5em; }
+  .nav-links { display: flex; gap: 36px; list-style: none; font-size: 0.9375rem; letter-spacing: 0.2em; color: var(--nibi); }
+  .nav-links a:hover { color: var(--ink); opacity: 1; }
+
+  /* ============ 3. 一文字入魂 Hero：空白 ≥65% ============ */
+  .hero {
+    position: relative;
+    min-height: 100svh;
+    display: grid;
+  }
+  .hero-title {
+    position: absolute;
+    right: clamp(40px, 22vw, 320px);
+    top: 50%; transform: translateY(-54%);
+    font-size: clamp(3rem, 6vw, 6rem);
+    font-weight: 300;
+    color: var(--ink-2);
+  }
+  .hero-sub {
+    position: absolute;
+    right: clamp(16px, 12vw, 180px);
+    top: 54%; transform: translateY(-50%);
+    font-size: 0.9375rem;
+    color: var(--nibi);
+  }
+  .hero-en { position: absolute; left: clamp(20px, 5vw, 56px); bottom: 96px; }
+  .hero-en .year { display: block; font-style: italic; font-weight: 300; font-size: 1rem; letter-spacing: 0.12em; margin-top: 6px; color: var(--ink); }
+  /* 印章：24-32px 方形臙脂，反白一字，rotate ≤3° */
+  .seal {
+    position: absolute;
+    right: clamp(20px, 5vw, 56px);
+    bottom: 96px;
+    width: 32px; height: 32px;
+    background: var(--enji); color: var(--paper);
+    font-size: 1.125rem; line-height: 32px; text-align: center;
+    transform: rotate(-3deg);
+  }
+  .scroll-hint {
+    position: absolute; left: 50%; bottom: 32px; transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 12px;
+  }
+  .scroll-hint::after {
+    content: ""; width: 1px; height: 48px; background: var(--ink);
+    transform-origin: top;
+    animation: grow 2.4s var(--ease) infinite;
+  }
+  @keyframes grow { 0% { transform: scaleY(0); } 55% { transform: scaleY(1); } 100% { transform: scaleY(1); opacity: 0; } }
+
+  /* ============ 4. 横线章节：hairline + 汉数字 + 英文标签 ============ */
+  .chapter {
+    display: flex; align-items: center; gap: 16px;
+    padding-top: 48px; margin-bottom: 56px;
+    border-top: 1px solid var(--line);
+  }
+  .chapter .dot { width: 4px; height: 4px; border-radius: 50%; background: var(--ink); flex: none; }
+  .chapter .kanji { font-size: 0.875rem; letter-spacing: 0.3em; color: var(--ink); }
+  .chapter .en { margin-left: auto; }
+
+  /* ============ 5. 间之栅格：内容只占 4-5 列 ============ */
+  section { padding-block: 0 0; }
+  .spacing-lg { height: clamp(96px, 14vw, 160px); }
+
+  /* 小图大空：图 42% / 文 58%，下一模块镜像 */
+  .pair {
+    display: grid;
+    grid-template-columns: 42fr 46fr;
+    column-gap: clamp(24px, 6vw, 80px);
+    align-items: start;
+  }
+  .pair.reverse { grid-template-columns: 46fr 42fr; }
+  .pair.reverse figure { order: 2; }
+  .pair.reverse .pair-body { order: 1; }
+
+  /* 摄影占位：上线时替换为真实自然光空景（材质/器物/光影），勿在此规则里设背景 */
+  figure.photo { position: relative; }
+  figure.photo .ph { width: 100%; border: 1px solid var(--line); }
+  .ph-tea  { aspect-ratio: 4/5; background: linear-gradient(160deg, #E6DCC8 0%, #D6C6A8 45%, #C2B190 100%); }
+  .ph-leaf { aspect-ratio: 4/3; background: linear-gradient(200deg, #E0DAC4 0%, #CBC6A6 60%, #B3AF8C 100%); }
+  .ph-stone{ aspect-ratio: 4/3; background: linear-gradient(140deg, #E8E1D2 0%, #D2C8B4 55%, #BBAF97 100%); }
+  .ph-room { aspect-ratio: 16/9; background: linear-gradient(180deg, #EFE8D8 0%, #DDD2B8 55%, #C8BC9E 100%); }
+  figure.photo figcaption {
+    margin-top: 12px;
+    font-size: 0.8125rem; color: var(--nibi); letter-spacing: 0.15em;
+  }
+
+  .pair-body .lead { font-size: 1.25rem; letter-spacing: 0.1em; margin-bottom: 24px; color: var(--ink-2); }
+  .pair-body p { max-width: 34em; color: var(--ink); }
+  .pair-body .note { color: var(--nibi); font-size: 0.9375rem; }
+
+  .price {
+    font-family: var(--serif); font-style: italic; font-weight: 300;
+    font-size: 1.375rem; letter-spacing: 0.08em;
+    margin-top: 24px;
+  }
+  .wire-btn {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 12px 44px;
+    border: 1px solid var(--ink);
+    font-size: 0.9375rem; letter-spacing: 0.3em;
+    transition: background-color 400ms var(--ease), color 400ms var(--ease);
+  }
+  .wire-btn:hover { background: var(--ink); color: var(--paper); opacity: 1; }
+
+  /* ============ 6. 匠人三段：小图错落 ============ */
+  .crafts { display: grid; row-gap: clamp(64px, 9vw, 112px); }
+  .craft { display: grid; grid-template-columns: 24fr 60fr; column-gap: clamp(24px, 6vw, 72px); align-items: start; }
+  .craft:nth-child(2) { grid-template-columns: 60fr 24fr; }
+  .craft:nth-child(2) figure { order: 2; }
+  .craft:nth-child(2) .craft-body { order: 1; padding-left: clamp(0px, 8vw, 120px); }
+  .craft h3 { margin-bottom: 12px; }
+  .craft h3 .en { margin-left: 12px; }
+  .craft p { max-width: 32em; color: var(--ink); }
+
+  /* ============ 7. 空间：全宽摄影 + 竖排一句 ============ */
+  .space { position: relative; margin-top: clamp(96px, 14vw, 160px); }
+  .space figure.photo .ph { border: none; }
+  .space .vertical-phrase {
+    position: absolute;
+    right: clamp(24px, 8vw, 96px); top: 50%; transform: translateY(-50%);
+    font-size: 1.5rem; letter-spacing: 0.4em; color: var(--ink-2);
+    background: rgba(247,243,236,0.82);
+    padding: 28px 10px;
+  }
+
+  /* ============ 8. 轻脚注页脚 ============ */
+  footer { margin-top: clamp(96px, 14vw, 160px); border-top: 1px solid var(--line); }
+  .foot-inner {
+    display: flex; justify-content: space-between; align-items: flex-end; gap: 32px;
+    padding-block: 48px 40px; flex-wrap: wrap;
+  }
+  .foot-sign { font-size: 1.25rem; letter-spacing: 0.5em; color: var(--ink-2); }
+  .foot-info { font-size: 0.8125rem; line-height: 2.1; color: var(--nibi); }
+  .foot-en { text-align: right; }
+
+  /* ============ 9. 入场动效：慢半拍淡入 ============ */
+  .fade { opacity: 0; transform: translateY(16px); transition: opacity 1000ms var(--ease), transform 1000ms var(--ease); }
+  .fade.in { opacity: 1; transform: none; }
+
+  /* ============ 10. 响应式 ============ */
+  @media (max-width: 900px) {
+    .nav-links { display: none; }
+    .hero-title { font-size: clamp(2rem, 9vw, 3rem); right: clamp(48px, 18vw, 120px); max-height: 70vh; }
+    .hero-sub   { right: clamp(16px, 6vw, 48px); writing-mode: horizontal-tb; top: auto; bottom: 30vh; transform: none; }
+    .pair, .pair.reverse { grid-template-columns: 1fr; row-gap: 32px; }
+    .pair.reverse figure { order: 1; }
+    .pair.reverse .pair-body { order: 2; }
+    .craft, .craft:nth-child(2) { grid-template-columns: 1fr; row-gap: 20px; }
+    .craft:nth-child(2) figure { order: 1; }
+    .craft:nth-child(2) .craft-body { order: 2; padding-left: 0; }
+    .space .vertical-phrase { writing-mode: horizontal-tb; padding: 16px 20px; }
+    .foot-en { text-align: left; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .fade { opacity: 1; transform: none; transition: none; }
+    .scroll-hint::after { animation: none; }
+    .wire-btn { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="wordmark" href="#top">白鷺園</a>
+    <nav aria-label="主导航">
+      <ul class="nav-links">
+        <li><a href="#autumn">今季の茶</a></li>
+        <li><a href="#craft">作法</a></li>
+        <li><a href="#visit">来访</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- 一文字入魂 Hero：竖排大字 + 印章，空白 ≥65% -->
+  <section class="hero">
+    <h1 class="hero-title vertical">一服の、<br>あいだ。</h1>
+    <p class="hero-sub vertical">一碗之间的余白</p>
+    <div class="hero-en en">Shirasagien Tea Estate<span class="year num">Kyoto, est. 1868</span></div>
+    <div class="seal" aria-hidden="true">鷺</div>
+    <div class="scroll-hint en" aria-hidden="true">Scroll</div>
+  </section>
+
+  <div class="spacing-lg" aria-hidden="true"></div>
+
+  <!-- 壱・今季の茶 -->
+  <section id="autumn" class="container fade">
+    <header class="chapter">
+      <span class="dot" aria-hidden="true"></span>
+      <span class="kanji">壱・秋</span>
+      <span class="en">This Season</span>
+    </header>
+    <div class="pair">
+      <figure class="photo">
+        <div class="ph ph-tea" role="img" aria-label="茶筅与茶碗静物（占位）"></div>
+        <figcaption>茶筅と茶碗 — 秋の光の中で</figcaption>
+      </figure>
+      <div class="pair-body">
+        <p class="lead">秋季限定抹茶「月影」</p>
+        <p>宇治山林在昼夜温差里把茶氨酸攒进叶片，研磨出的抹茶带着清冽的甜。一盏之间，秋意便落在舌根。</p>
+        <p class="price num">¥2,400 / 20g 缶</p>
+        <a class="wire-btn" href="#visit">茶を頼む</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="spacing-lg" aria-hidden="true"></div>
+
+  <!-- 弐・参・肆・匠人三段 -->
+  <section id="craft" class="container fade">
+    <header class="chapter">
+      <span class="dot" aria-hidden="true"></span>
+      <span class="kanji">弐・作法</span>
+      <span class="en">The Craft</span>
+    </header>
+    <div class="crafts">
+      <div class="craft">
+        <figure class="photo">
+          <div class="ph ph-leaf" role="img" aria-label="覆下茶园的新芽（占位）"></div>
+          <figcaption>栽培 — 覆下園の新芽</figcaption>
+        </figure>
+        <div class="craft-body">
+          <h3>栽培<span class="en">Cultivate</span></h3>
+          <p>采摘前二十天覆上苇帘，遮光让叶片留住更多的鲜。我们只取春摘的一芽二叶，其余的，留给土地。</p>
+        </div>
+      </div>
+      <div class="craft">
+        <figure class="photo">
+          <div class="ph ph-stone" role="img" aria-label="石磨与碾茶（占位）"></div>
+          <figcaption>碾茶 — 石臼の慢</figcaption>
+        </figure>
+        <div class="craft-body">
+          <h3>碾茶<span class="en">Mill</span></h3>
+          <p>石磨每分钟只转一圈。急不得——磨得太快，温度会带走香气；慢下来，粉末才有月光般的细。</p>
+        </div>
+      </div>
+      <div class="craft">
+        <figure class="photo">
+          <div class="ph ph-tea" role="img" aria-label="点前手势（占位）"></div>
+          <figcaption>点前 — 一碗の作法</figcaption>
+        </figure>
+        <div class="craft-body">
+          <h3>点前<span class="en">Serve</span></h3>
+          <p>茶筅快速刷出细沫，碗转两度，递给客人时话说得轻。点前的全部目的，是让这一碗成为此刻唯一的事。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="spacing-lg" aria-hidden="true"></div>
+
+  <!-- 空间：全宽摄影 + 竖排一句 -->
+  <section id="visit" class="space fade">
+    <figure class="photo">
+      <div class="ph ph-room" role="img" aria-label="茶室纸门与光（占位）"></div>
+      <figcaption class="container">茶室「听雨」— 午后的纸门与光</figcaption>
+    </figure>
+    <p class="vertical-phrase vertical">間を、愉しむ。</p>
+  </section>
+
+</main>
+
+<!-- 轻脚注页脚 -->
+<footer>
+  <div class="container foot-inner">
+    <div class="foot-sign vertical">白鷺園</div>
+    <div class="foot-info">
+      京都府宇治市宇治蓮華 21<span class="num">—4</span><br>
+      営業 10:00 — 18:00 · 水曜休<br>
+      <span class="num">TEL 0774-21-1868</span>
+    </div>
+    <div class="foot-en en">Tea since 1868<br>Shirasagien · Uji, Kyoto</div>
+  </div>
+</footer>
+
+<script>
+  // 入场淡入：慢半拍，IntersectionObserver threshold 0.15
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.fade').forEach((el) => io.observe(el));
+</script>
+
+</body>
+</html>
