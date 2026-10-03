@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ELECTRIC SWIRL — Psychedelic Template</title>
+<!--
+  Psychedelic（1960s 旧金山迷幻海报）起始模板（零构建，可直接打开）
+  ─────────────────────────────────────────────
+  风格规则速记：
+  · 双层分离：迷幻处理只在 hero/display 层，正文与时刻表永远干净
+  · 深紫底 × 奶油字（对比 >12:1）；振动只给色块不给文字
+  · 流动标题带实色投影（模糊 0）；SVG 位移 scale ≤ 字号 15%
+  · 每屏 ≤1 组振动配对；平涂禁渐变；背景漩涡透明度 ≤20%
+  · 眩晕安全：无 >3Hz 频闪、无形变循环、reduced-motion 全静态
+  字体 Climate Crisis / Yeseva One / Rubik Bubbles / Inter / Noto Sans SC 走 Google Fonts
+  详见 design-styles skill 的 references/psychedelic.md
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Climate+Crisis&family=Yeseva+One&family=Rubik+Bubbles&family=Inter:wght@400;600;700&family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  /* ============ 1. 设计 Token ============ */
+  :root {
+    --bg:      #1A0B2E;     /* Fillmore 深夜 */
+    --surface: #2A1650;
+    --cream:   #FFF3E0;
+    --magenta: #FF00A8;
+    --orange:  #FF6B00;
+    --lime:    #B4FF00;
+    --shadow-ink: #0F0620;  /* 实色投影同系 */
+
+    --font-display: "Climate Crisis", "Arial Black", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+    --font-art:     "Yeseva One", Georgia, serif;
+    --font-bubble:  "Rubik Bubbles", "Arial Black", sans-serif;
+    --font-body:    "Inter", "Helvetica Neue", "PingFang SC", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body { font-family: var(--font-body); font-size: 1.0625rem; line-height: 1.7; color: var(--cream); background: var(--bg); }
+  a { color: inherit; text-decoration: none; }
+  :focus-visible { outline: 3px solid var(--lime); outline-offset: 3px; }
+
+  .container { max-width: 1200px; margin-inline: auto; padding-inline: clamp(16px, 4vw, 40px); }
+  .num { font-variant-numeric: tabular-nums; }
+
+  h2 { font-family: var(--font-art); font-weight: 400; font-size: clamp(1.625rem, 3vw, 2.5rem); letter-spacing: 0.02em; }
+  .kicker { font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: var(--orange); }
+
+  /* 迷幻标题滤镜：只挂 display 层，scale ≈ 字号×0.13，filter region 加 padding */
+  .warp-title {
+    font-family: var(--font-display);
+    filter: url(#warp);
+    line-height: 1.15;
+  }
+  /* 实色投影副本：模糊 0 */
+  .warp-shadow { text-shadow: 6px 6px 0 var(--shadow-ink); }
+
+  /* 胶囊按钮（信息层：零迷幻处理） */
+  .btn {
+    display: inline-block;
+    font-weight: 700; font-size: 1rem;
+    background: var(--magenta); color: var(--cream);
+    border-radius: 999px; padding: 14px 36px;
+    transition: transform 250ms;
+  }
+  .btn:hover { transform: translateY(-4px); }
+  .btn.ghost { background: transparent; border: 2px solid var(--orange); color: var(--orange); }
+
+  /* ============ 2. 漩涡 Hero：同心圆日落 + 融化标题 ============ */
+  .hero { position: relative; padding-block: clamp(88px, 12vw, 160px); overflow: hidden; text-align: center; }
+  .swirl {                                 /* 日落式同心圆：透明度 ≤20% */
+    position: absolute; left: 50%; bottom: -42%;
+    width: 160vmax; aspect-ratio: 1; transform: translateX(-50%);
+    border-radius: 50%;
+    background: repeating-radial-gradient(circle at 50% 50%,
+      var(--magenta) 0 36px, var(--orange) 36px 72px, var(--surface) 72px 120px);
+    opacity: 0.2;
+    animation: swirl 26s linear infinite;
+    pointer-events: none;
+  }
+  @keyframes swirl { to { transform: translateX(-50%) rotate(360deg); } }
+  .hero-inner { position: relative; }
+  .hero .kicker { display: block; margin-bottom: 20px; }
+  .hero h1 {
+    font-size: clamp(2.75rem, 9vw, 7rem);
+    color: var(--cream);
+  }
+  .hero .sub { margin-top: 28px; font-size: clamp(1rem, 1.6vw, 1.25rem); color: var(--cream); }
+  .hero .sub b { color: var(--lime); font-weight: 700; }
+  .hero-cta { margin-top: 32px; display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+
+  /* ============ 3. 波浪分割带 ============ */
+  .wave-divider { display: block; width: 100%; height: clamp(60px, 9vw, 120px); }
+
+  /* ============ 4. Lineup 时刻表（信息层示范：完全干净） ============ */
+  .lineup { padding-block: clamp(24px, 4vw, 48px) clamp(48px, 7vw, 88px); }
+  .lineup-head { text-align: center; margin-bottom: 40px; }
+  .lineup-head .kicker { display: block; margin-bottom: 10px; }
+  .day-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(24px, 4vw, 48px); max-width: 1040px; margin-inline: auto; }
+  .day h3 { font-family: var(--font-body); font-weight: 700; font-size: 1.125rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--lime); margin-bottom: 16px; }
+  .day ul { list-style: none; }
+  .day li { display: flex; gap: 14px; align-items: baseline; padding-block: 12px; border-bottom: 1px solid rgba(255,243,224,0.14); }
+  .day li::before { content: ""; width: 14px; height: 14px; border-radius: 50%; flex: none; align-self: center; }
+  .day .d1 li::before { background: var(--magenta); }
+  .day .d2 li::before { background: var(--orange); }
+  .day .d3 li::before { background: var(--lime); }
+  .day .t { font-variant-numeric: tabular-nums; font-weight: 600; font-size: 0.875rem; color: rgba(255,243,224,0.65); min-width: 5em; }
+  .day .who { font-weight: 700; }
+
+  /* ============ 5. 海报画廊：6 张致敬卡 ============ */
+  .posters { background: var(--surface); padding-block: clamp(56px, 8vw, 96px); }
+  .poster-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(20px, 3vw, 32px); margin-top: 40px; }
+  .pcard {
+    aspect-ratio: 2/3;
+    border-radius: 14px;
+    overflow: hidden;
+    position: relative;
+    display: flex; flex-direction: column;
+    transition: transform 250ms, box-shadow 250ms;
+    box-shadow: 8px 8px 0 var(--shadow-ink);
+  }
+  .pcard:hover { transform: translateY(-6px); }
+  .pcard .art { flex: 1; position: relative; overflow: hidden; display: grid; place-items: center; }
+  .pcard .strip { background: rgba(15,6,32,0.85); padding: 14px 16px; font-size: 0.8125rem; line-height: 1.4; }
+  .pcard .strip b { display: block; font-size: 0.9375rem; }
+  .pcard .strip span { color: rgba(255,243,224,0.65); font-size: 0.6875rem; letter-spacing: 0.08em; text-transform: uppercase; }
+  /* 六种致敬图样：纯平涂 + 粗描边，无渐变 */
+  .p1 { background: var(--magenta); box-shadow: 8px 8px 0 var(--lime); }
+  .p1 .art::before { content: ""; width: 70%; aspect-ratio: 1; border-radius: 50%; border: 10px solid var(--cream); }
+  .p2 { background: var(--orange); box-shadow: 8px 8px 0 var(--magenta); }
+  .p2 .art::before { content: ""; width: 76%; height: 60%; background: var(--magenta); clip-path: polygon(0 0, 100% 12%, 88% 100%, 8% 88%); }
+  .p3 { background: var(--lime); box-shadow: 8px 8px 0 var(--orange); }
+  .p3 .art::before { content: ""; width: 80%; height: 46%; border-radius: 50%; background: var(--surface); }
+  .p3 .art::after { content: ""; position: absolute; width: 60%; height: 8px; background: var(--magenta); border-radius: 99px; transform: rotate(-18deg); }
+  .p4 { background: var(--surface); box-shadow: 8px 8px 0 var(--magenta); border: 3px solid var(--lime); }
+  .p4 .art::before { content: ""; width: 34%; aspect-ratio: 1; border-radius: 50%; background: var(--cream); }
+  .p4 .art::after { content: ""; position: absolute; inset: 0; background: repeating-conic-gradient(from 0deg, var(--surface) 0deg 24deg, transparent 24deg 48deg); opacity: 0.6; }
+  .p5 { background: var(--magenta); box-shadow: 8px 8px 0 var(--orange); }
+  .p5 .art::before { content: ""; width: 70%; aspect-ratio: 1; border-radius: 50%;
+    background: repeating-radial-gradient(circle, var(--orange) 0 18px, var(--surface) 18px 36px); }
+  .p6 { background: var(--orange); box-shadow: 8px 8px 0 var(--lime); }
+  .p6 .art::before { content: ""; width: 72%; height: 70%; background: var(--cream); border-radius: 48% 52% 55% 45% / 55% 48% 52% 45%; border: 8px solid var(--surface); }
+  .pcard .flow { font-family: var(--font-bubble); font-size: 1.25rem; color: var(--cream); position: absolute; top: 14px; left: 50%; transform: translateX(-50%) rotate(-4deg); white-space: nowrap; }
+  .pcard .homage { position: absolute; bottom: 12px; right: 14px; font-family: var(--font-body); font-size: 0.625rem; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,243,224,0.75); }
+
+  /* ============ 6. 黑胶快闪卡 ============ */
+  .vinyl-shop { padding-block: clamp(56px, 8vw, 96px); }
+  .vinyl-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-top: 40px; }
+  .vcard { background: var(--surface); border-radius: 12px; padding: 18px; text-align: center; }
+  .vcard .sleeve { aspect-ratio: 1; border-radius: 8px; display: grid; place-items: center; margin-bottom: 14px; }
+  .vcard .disc { width: 58%; aspect-ratio: 1; border-radius: 50%;
+    background: repeating-radial-gradient(circle, #1c1b18 0 4px, #2a2823 4px 5px);
+    border: 3px solid var(--shadow-ink);
+    position: relative; }
+  .vcard .disc::after { content: ""; position: absolute; inset: 38%; border-radius: 50%; background: var(--cream); border: 2px solid var(--shadow-ink); }
+  .vcard:nth-child(1) .sleeve { background: var(--magenta); }
+  .vcard:nth-child(2) .sleeve { background: var(--orange); }
+  .vcard:nth-child(3) .sleeve { background: var(--lime); }
+  .vcard:nth-child(4) .sleeve { background: var(--cream); }
+  .vcard .t { font-weight: 700; font-size: 0.9375rem; }
+  .vcard .p { color: var(--lime); font-weight: 600; margin-top: 4px; }
+
+  /* ============ 7. 票务（信息层） + 贴纸徽章 ============ */
+  .tickets { padding-block: 0 clamp(56px, 8vw, 96px); }
+  .ticket-panel { max-width: 760px; margin-inline: auto; background: var(--surface); border-radius: 20px; padding: clamp(28px, 5vw, 48px); position: relative; }
+  .ticket-row { display: flex; justify-content: space-between; gap: 16px; align-items: center; padding-block: 18px; border-bottom: 1px solid rgba(255,243,224,0.14); flex-wrap: wrap; }
+  .ticket-row:last-of-type { border-bottom: none; }
+  .ticket-row .tier { font-weight: 700; font-size: 1.125rem; }
+  .ticket-row .tier small { display: block; font-weight: 400; color: rgba(255,243,224,0.6); font-size: 0.8125rem; }
+  .ticket-row .price { font-family: var(--font-body); font-weight: 700; font-size: 1.75rem; color: var(--lime); }
+  .sticker {                            /* 贴纸徽章：旋转 ±4° */
+    position: absolute; top: -16px; right: 24px;
+    font-family: var(--font-bubble); font-size: 0.875rem;
+    background: var(--lime); color: var(--bg);
+    border: 2px solid var(--magenta); border-radius: 999px;
+    padding: 8px 18px; transform: rotate(4deg);
+  }
+
+  /* ============ 8. Footer 大字 Marquee ============ */
+  footer { border-top: 3px solid var(--magenta); }
+  .marquee { overflow: hidden; white-space: nowrap; padding-block: 14px; background: var(--magenta); color: var(--cream); }
+  .marquee-track { display: inline-block; font-family: var(--font-bubble); font-size: 1.25rem; letter-spacing: 0.06em; animation: march 40s linear infinite; }
+  @keyframes march { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  .foot-inner { padding-block: 36px; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; font-size: 0.8125rem; color: rgba(255,243,224,0.65); }
+  .foot-inner .safe { color: var(--orange); }
+
+  /* ============ 9. 响应式 ============ */
+  @media (max-width: 900px) {
+    .day-grid { grid-template-columns: 1fr; max-width: 440px; }
+    .poster-grid { grid-template-columns: 1fr 1fr; }
+    .vinyl-grid { grid-template-columns: 1fr 1fr; }
+    /* 移动端：滤镜动画关闭，保留静态位移 */
+    .warp-title { filter: none; transform: translate(1px, 1px) rotate(-1deg); }
+    .swirl { animation: none; }
+  }
+  @media (max-width: 560px) {
+    .poster-grid { grid-template-columns: 1fr; }
+    .poster-grid .pcard { max-width: 420px; margin-inline: auto; width: 100%; }
+    .vinyl-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+    .hero h1 { font-size: clamp(2.5rem, 13vw, 3.5rem); }
+    .marquee-track { animation-duration: 60s; }   /* 移动端放慢 1.5× */
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .swirl, .marquee-track { animation: none; }
+    .btn, .pcard { transition: none; }
+    .warp-title { filter: none; transform: none; }   /* 形变也一并静态化 */
+  }
+</style>
+</head>
+<body>
+
+<!-- SVG 波动滤镜（只挂 display 层标题） -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <filter id="warp" x="-20%" y="-20%" width="140%" height="140%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.012 0.02" numOctaves="1" seed="7" result="n"/>
+    <feDisplacementMap in="SourceGraphic" in2="n" scale="14" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+</svg>
+
+<main id="top">
+
+  <!-- 漩涡 Hero：日落同心圆 + 融化标题 -->
+  <section class="hero">
+    <div class="swirl" aria-hidden="true"></div>
+    <div class="container hero-inner">
+      <span class="kicker">Fillmore Spirit · Shanghai 2026</span>
+      <h1 class="warp-title warp-shadow">ELECTRIC<br>SWIRL</h1>
+      <p class="sub">迷幻摇滚音乐节 × 黑胶快闪店 — <b class="num">2026.11.7 — 11.8</b> · 西岸艺术中心</p>
+      <div class="hero-cta">
+        <a class="btn" href="#tickets">购票</a>
+        <a class="btn ghost" href="#lineup">看阵容</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 波浪分割带 -->
+  <svg class="wave-divider" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0 64 C 240 8, 480 8, 720 64 S 1200 120, 1440 64 L1440 120 L0 120 Z" fill="#FF00A8" opacity="0.9"/>
+    <path d="M0 84 C 260 30, 500 30, 740 84 S 1220 132, 1440 84" fill="none" stroke="#FF6B00" stroke-width="6" opacity="0.5"/>
+  </svg>
+
+  <!-- Lineup：信息层完全干净 -->
+  <section id="lineup" class="lineup container">
+    <header class="lineup-head">
+      <span class="kicker">Lineup · 三日不停</span>
+      <h2>阵容</h2>
+    </header>
+    <div class="day-grid">
+      <div class="day d1">
+        <h3 class="num">11.07 周五</h3>
+        <ul>
+          <li><span class="t num">19:00</span><span class="who">蜜糖(commune)</span></li>
+          <li><span class="t num">20:30</span><span class="who">白色漩涡 White Swirl</span></li>
+          <li><span class="t num">22:00</span><span class="who">霓虹玫瑰 Neon Rose</span></li>
+        </ul>
+      </div>
+      <div class="day d2">
+        <h3 class="num">11.08 周六</h3>
+        <ul>
+          <li><span class="t num">18:30</span><span class="who">落日走廊 Sunset Corridor</span></li>
+          <li><span class="t num">20:00</span><span class="who">融化乐队 Meltdown</span></li>
+          <li><span class="t num">22:00</span><span class="who">电蝴蝶 Electric Butterflies</span></li>
+        </ul>
+      </div>
+      <div class="day d3">
+        <h3 class="num">11.08 深夜场</h3>
+        <ul>
+          <li><span class="t num">23:30</span><span class="who">曼陀罗 DJ set</span></li>
+          <li><span class="t num">00:30</span><span class="who">骷髅与玫瑰 Skeleton & Roses</span></li>
+          <li><span class="t num">01:30</span><span class="who">午夜 Fillmore 即兴 jam</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 海报画廊：致敬 Big Five -->
+  <section class="posters">
+    <div class="container">
+      <header class="lineup-head">
+        <span class="kicker">Poster Gallery · 限量丝网印刷</span>
+        <h2 style="color:var(--cream)">六张纪念海报</h2>
+      </header>
+      <div class="poster-grid">
+        <article class="pcard p1">
+          <span class="flow" aria-hidden="true">Vibrate!</span>
+          <div class="art"></div>
+          <div class="strip"><b>振动 No.1</b><span>致敬 Moscoso · 等明度振动</span></div>
+          <span class="homage">A/P Edition</span>
+        </article>
+        <article class="pcard p2">
+          <span class="flow" aria-hidden="true">Melt!</span>
+          <div class="art"></div>
+          <div class="strip"><b>融化 No.2</b><span>致敬 Wilson · 充气字体</span></div>
+          <span class="homage">A/P Edition</span>
+        </article>
+        <article class="pcard p3">
+          <span class="flow" aria-hidden="true">Wave!</span>
+          <div class="art"></div>
+          <div class="strip"><b>波浪 No.3</b><span>致敬 Griffin · 飞行眼球</span></div>
+          <span class="homage">A/P Edition</span>
+        </article>
+        <article class="pcard p4">
+          <span class="flow" aria-hidden="true">Roses!</span>
+          <div class="art"></div>
+          <div class="strip"><b>骷髅与玫瑰 No.4</b><span>致敬 Kelley & Mouse · FD-26</span></div>
+          <span class="homage">A/P Edition</span>
+        </article>
+        <article class="pcard p5">
+          <span class="flow" aria-hidden="true">Spin!</span>
+          <div class="art"></div>
+          <div class="strip"><b>日落同心圆 No.5</b><span>Fillmore 日落式</span></div>
+          <span class="homage">A/P Edition</span>
+        </article>
+        <article class="pcard p6">
+          <span class="flow" aria-hidden="true">Bloom!</span>
+          <div class="art"></div>
+          <div class="strip"><b>曼陀罗 No.6</b><span>轴对称构图</span></div>
+          <span class="homage">A/P Edition</span>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- 黑胶快闪 -->
+  <section class="vinyl-shop container">
+    <header class="lineup-head">
+      <span class="kicker">Vinyl Pop-up · 现场限定</span>
+      <h2>黑胶快闪</h2>
+    </header>
+    <div class="vinyl-grid">
+      <div class="vcard"><div class="sleeve"><div class="disc"></div></div><div class="t">Electric Swirl 现场实录</div><div class="p num">¥180</div></div>
+      <div class="vcard"><div class="sleeve"><div class="disc"></div></div><div class="t">融化乐队 · 单曲</div><div class="p num">¥88</div></div>
+      <div class="vcard"><div class="sleeve"><div class="disc"></div></div><div class="t">霓虹玫瑰 · EP</div><div class="p num">¥120</div></div>
+      <div class="vcard"><div class="sleeve"><div class="disc"></div></div><div class="t">致敬合辑 Big Five</div><div class="p num">¥220</div></div>
+    </div>
+  </section>
+
+  <!-- 票务：信息层 -->
+  <section id="tickets" class="tickets container">
+    <div class="ticket-panel">
+      <span class="sticker">EARLY BIRD!</span>
+      <div class="ticket-row">
+        <span class="tier">单日票<small>11.07 或 11.08 任选</small></span>
+        <span class="price num">¥280</span>
+        <a class="btn" href="#tickets">购买</a>
+      </div>
+      <div class="ticket-row">
+        <span class="tier">两日通票<small>全场通用 + 海报抽签资格</small></span>
+        <span class="price num">¥480</span>
+        <a class="btn" href="#tickets">购买</a>
+      </div>
+      <div class="ticket-row">
+        <span class="tier">黑胶套票<small>通票 + 现场实录黑胶一张</small></span>
+        <span class="price num">¥598</span>
+        <a class="btn" href="#tickets">购买</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- Footer 大字 Marquee -->
+<footer>
+  <div class="marquee" aria-hidden="true">
+    <span class="marquee-track">ELECTRIC SWIRL 2026 ★ 11.7 — 11.8 ★ 西岸艺术中心 ★ TURN ON · TUNE IN · DANCE ★ ELECTRIC SWIRL 2026 ★ 11.7 — 11.8 ★ 西岸艺术中心 ★ TURN ON · TUNE IN · DANCE ★&nbsp;</span>
+  </div>
+  <div class="container foot-inner">
+    <span>© 2026 ELECTRIC SWIRL ORGANIZER</span>
+    <span class="safe">※ 本站动效已按前庭安全标准设计，可在系统设置中关闭 — Vestibular-safe motion</span>
+  </div>
+</footer>
+
+</body>
+</html>

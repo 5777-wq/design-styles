@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Moonbeam Records — Mid-Century Template</title>
+<!--
+  Mid-Century Modern（1950s 美国中古现代）起始模板（零构建，可直接打开）
+  ─────────────────────────────────────────────
+  风格规则速记：
+  · 每屏一个装饰母题（星芒或 blob 二选一）；一个品牌符号贯穿全页
+  · 全页 4-5 色，全部加灰调（饱和度 45-65%），无荧光色
+  · 手写体全页只一处（字标）；标题几何无衬线或粗 slab
+  · blob 静态 8 值圆角禁 morph；星芒纯色 clip-path 禁渐变
+  · 圆角只有全圆胶囊或 ≤16px；分割用锯齿/虚线/打孔线
+  · 温和不对称 60/40，留白充足；动效只有位移/慢转/淡入
+  字体 Jost / Alfa Slab One / Yellowtail / Inter / Noto Sans SC 走 Google Fonts
+  详见 design-styles skill 的 references/mid-century.md
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@500;600;700&family=Alfa+Slab+One&family=Yellowtail&family=Inter:wght@400;600&family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  /* ============ 1. 设计 Token ============ */
+  :root {
+    --cream:   #F5EFE0;      /* 奶油底 */
+    --mustard: #E3B23C;      /* 芥末 */
+    --terracotta: #D96C3F;   /* 赤陶 */
+    --slate:   #5B7C99;      /* 灰蓝 */
+    --char:    #2B2B28;      /* 炭黑文字 */
+    --paper-noise: rgba(43, 43, 40, 0.04);   /* 纸纹噪点 */
+
+    --font-display: "Jost", "Futura", "Century Gothic", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+    --font-slab:    "Alfa Slab One", "Rockwell", serif;
+    --font-script:  "Yellowtail", cursive;   /* 全页只一处 */
+    --font-body:    "Inter", "Helvetica Neue", "PingFang SC", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: var(--font-body);
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    color: var(--char);
+    background: var(--cream);
+    position: relative;
+  }
+  /* 纸纹噪点 ≤4%：只负责年代感 */
+  body::after {
+    content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 999;
+    opacity: 1;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+  }
+
+  a { color: inherit; text-decoration: none; }
+  :focus-visible { outline: 3px solid var(--slate); outline-offset: 2px; }
+
+  .container { max-width: 1160px; margin-inline: auto; padding-inline: clamp(20px, 4vw, 44px); }
+  .num { font-variant-numeric: tabular-nums; }
+
+  h2 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.625rem, 3vw, 2.375rem); letter-spacing: 0.02em; }
+  .kicker { font-family: var(--font-display); font-weight: 600; font-size: 0.8125rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--slate); }
+
+  /* 胶囊按钮：全圆 + 硬阴影位移 */
+  .btn {
+    display: inline-block;
+    font-family: var(--font-display); font-weight: 600; font-size: 1rem;
+    background: var(--char); color: var(--cream);
+    border-radius: 999px;
+    padding: 14px 36px;
+    box-shadow: 0 0 0 var(--char);
+    transition: transform 150ms, box-shadow 150ms;
+  }
+  .btn:hover  { transform: translate(-2px, -2px); box-shadow: 4px 4px 0 var(--terracotta); }
+  .btn:active { transform: translate(0, 0); box-shadow: 0 0 0 var(--terracotta); }
+
+  /* 星芒：12 尖纯色 clip-path，禁渐变 */
+  .burst { display: inline-block; width: 24px; height: 24px; background: var(--terracotta);
+    clip-path: polygon(100% 50%, 82.6% 60.4%, 90.4% 79.4%, 70.7% 79.3%, 60.4% 100%, 50% 82.6%, 39.6% 100%, 29.3% 79.3%, 9.6% 79.4%, 17.4% 60.4%, 0% 50%, 17.4% 39.6%, 9.6% 20.6%, 29.3% 20.7%, 39.6% 0%, 50% 17.4%, 60.4% 0%, 70.7% 20.7%, 90.4% 20.6%, 82.6% 39.6%); }
+
+  /* ============ 2. 导航：script 字标 + 灰蓝菜单 ============ */
+  .nav { background: var(--slate); color: var(--cream); }
+  .nav-inner { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 14px; }
+  .script-logo { font-family: var(--font-script); font-size: 1.75rem; line-height: 1; }   /* 全页唯一手写体 */
+  .nav-links { display: flex; gap: 26px; list-style: none; font-family: var(--font-display); font-weight: 500; font-size: 0.9375rem; letter-spacing: 0.08em; text-transform: uppercase; }
+  .nav-links a:hover { color: var(--mustard); }
+  .nav .btn { background: var(--mustard); color: var(--char); padding: 10px 26px; }
+
+  /* ============ 3. Blob Hero：左文右形，温和不对称 ============ */
+  .hero { padding-block: clamp(56px, 8vw, 104px); }
+  .hero-grid { display: grid; grid-template-columns: 7fr 5fr; gap: clamp(24px, 4vw, 56px); align-items: center; }
+  .hero h1 {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(2.25rem, 4.5vw, 4rem);
+    line-height: 1.15; letter-spacing: 0.01em;
+    max-width: 14ch;
+  }
+  .hero h1 em { font-style: normal; color: var(--terracotta); }
+  .hero p { max-width: 32em; margin-top: 20px; font-size: 1.09375rem; }
+  .hero-cta { margin-top: 32px; display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+  .hero-cta .link { font-family: var(--font-display); font-weight: 600; border-bottom: 2px solid var(--slate); padding-bottom: 2px; }
+  .blob-wrap { display: grid; place-items: center; position: relative; }
+  .blob {
+    width: min(42vw, 400px); aspect-ratio: 1;
+    background: var(--terracotta);
+    border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;   /* 8 值静态 blob */
+    display: grid; place-items: center;
+  }
+  .vinyl {                                   /* 品牌符号：黑胶唱片 */
+    width: 62%; aspect-ratio: 1; border-radius: 50%;
+    background:
+      radial-gradient(circle at 50% 50%, var(--mustard) 0 18%, #26241f 18.5% 55%, #33302a 55% 56%, #26241f 56% 68%, #33302a 68% 69%, #26241f 69% 82%, #33302a 82% 83%, #1c1b18 83% 100%);
+    border: 6px solid var(--char);
+    box-shadow: 8px 10px 0 rgba(43,43,40,0.18);
+  }
+  .orbit { position: absolute; border: 2px dashed var(--slate); border-radius: 50%; opacity: 0.5; }   /* 轨道线 */
+  .orbit.o1 { width: 78%; aspect-ratio: 1; }
+  .orbit.o2 { width: 94%; aspect-ratio: 1; }
+  .orbit .dot { position: absolute; width: 12px; height: 12px; border-radius: 50%; background: var(--slate); top: -6px; left: 20%; }
+
+  /* ============ 4. 星芒公告条 ============ */
+  .notice { background: var(--mustard); border-block: 3px solid var(--char); }
+  .notice-inner {
+    display: flex; align-items: center; justify-content: center; gap: 18px;
+    padding-block: 14px;
+    font-family: var(--font-display); font-weight: 600; font-size: 1rem;
+    letter-spacing: 0.12em; text-transform: uppercase;
+  }
+  .notice .burst { animation: spin 60s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ============ 5. 菜单卡：名称 + 点线 + 价格 ============ */
+  .chart { padding-block: clamp(56px, 8vw, 96px); }
+  .chart-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 28px; }
+  .chart-cols { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(24px, 4vw, 56px); max-width: 940px; }
+  .chart .cat { font-family: var(--font-display); font-weight: 700; font-size: 0.9375rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--terracotta); margin-bottom: 12px; }
+  .menu-item { display: flex; align-items: baseline; gap: 10px; padding-block: 10px; }
+  .menu-item .t { font-family: var(--font-display); font-weight: 500; font-size: 1.0625rem; white-space: nowrap; }
+  .menu-item .leader { flex: 1; border-bottom: 2px dotted rgba(43,43,40,0.45); transform: translateY(-4px); }
+  .menu-item .p { font-family: var(--font-slab); font-size: 1.0625rem; }
+  .menu-item .tag { font-family: var(--font-display); font-weight: 600; font-size: 0.6875rem; letter-spacing: 0.1em; background: var(--slate); color: var(--cream); border-radius: 999px; padding: 3px 10px; white-space: nowrap; }
+
+  /* ============ 6. 符号三联卡 ============ */
+  .services { padding-block: 0 clamp(56px, 8vw, 96px); }
+  .svc-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(20px, 3vw, 32px); }
+  .svc {
+    background: #FFFFFF;
+    border-radius: 24px;                    /* 近直角档：24px */
+    padding: 32px 28px;
+    box-shadow: 0 2px 0 rgba(43,43,40,0.12);
+  }
+  .svc .glyph {
+    width: 64px; height: 64px; border-radius: 50%;
+    background: var(--cream);
+    border: 3px solid var(--char);
+    display: grid; place-items: center;
+    margin-bottom: 20px;
+  }
+  .svc .glyph i { width: 26px; height: 26px; display: block; background: var(--terracotta); }
+  .svc:nth-child(2) .glyph i { background: var(--slate); border-radius: 50% 50% 0 0; height: 18px; }
+  .svc:nth-child(3) .glyph i { background: var(--mustard); clip-path: polygon(50% 0, 100% 100%, 0 100%); }
+  .svc h3 { font-family: var(--font-display); font-weight: 600; font-size: 1.25rem; margin-bottom: 8px; }
+  .svc p { font-size: 0.984rem; color: #4c4a44; }
+
+  /* ============ 7. 票券区块：打孔边 + 微倾斜 ============ */
+  .ticket-wrap { padding-block: 0 clamp(56px, 8vw, 96px); display: grid; place-items: center; }
+  .ticket {
+    width: min(640px, 100%);
+    background: #FFFFFF;
+    border-radius: 16px;
+    transform: rotate(-1.5deg);
+    transition: transform 200ms;
+    position: relative;
+    padding: 28px 32px;
+    box-shadow: 0 3px 0 rgba(43,43,40,0.15);
+  }
+  .ticket:hover { transform: rotate(0deg); }
+  .ticket::before, .ticket::after {          /* 两端打孔 */
+    content: ""; position: absolute; top: 50%; width: 26px; height: 26px; border-radius: 50%;
+    background: var(--cream); border: 3px solid var(--char);
+    transform: translateY(-50%);
+  }
+  .ticket::before { left: -16px; }
+  .ticket::after { right: -16px; }
+  .ticket .row { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding-block: 10px; border-bottom: 2px dashed rgba(43,43,40,0.3); }
+  .ticket .row:last-child { border-bottom: none; padding-bottom: 0; }
+  .ticket .k { font-family: var(--font-display); font-weight: 600; font-size: 0.8125rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--slate); }
+  .ticket .v { font-family: var(--font-display); font-weight: 600; }
+
+  /* ============ 8. Albers 宣言区：叠色方块 + 反白大字 ============ */
+  .albers {
+    background: var(--terracotta);
+    padding-block: clamp(64px, 9vw, 112px);
+    position: relative;
+    overflow: hidden;
+  }
+  .albers .stack {                           /* Albers 向正方形致敬：同色系叠色 */
+    position: absolute; right: clamp(-60px, -4vw, -20px); bottom: -60px;
+    width: clamp(240px, 30vw, 380px); aspect-ratio: 1;
+    background: var(--mustard);
+    display: grid; place-items: center;
+  }
+  .albers .stack i { display: block; width: 62%; aspect-ratio: 1; background: var(--slate); opacity: 0.85; }
+  .albers blockquote {
+    position: relative;
+    font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(1.625rem, 3.5vw, 2.75rem);
+    line-height: 1.25; color: var(--cream);
+    max-width: 18ch;
+  }
+  .albers cite { display: block; margin-top: 20px; font-family: var(--font-display); font-style: normal; font-weight: 500; font-size: 0.9375rem; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(245,239,224,0.8); }
+
+  /* ============ 9. 页脚：回旋镖 + 营业信息 ============ */
+  footer { padding-block: 48px 40px; }
+  .foot-grid { display: flex; justify-content: space-between; gap: 32px; flex-wrap: wrap; align-items: flex-start; }
+  .foot-brand { font-family: var(--font-script); font-size: 2rem; }
+  .foot-grid p { font-size: 0.9375rem; color: #4c4a44; }
+  .foot-grid ul { list-style: none; line-height: 2; font-size: 0.9375rem; }
+  .foot-grid a:hover { color: var(--terracotta); }
+  .boomerang { width: 44px; height: 22px; background: var(--slate);
+    border-radius: 0 100% 0 100%; transform: rotate(-12deg); }   /* 回旋镖小图标 */
+  .colophon { margin-top: 32px; padding-top: 16px; border-top: 2px dashed rgba(43,43,40,0.3); display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-size: 0.8125rem; color: #6b6960; }
+
+  /* ============ 10. 响应式 ============ */
+  @media (max-width: 900px) {
+    .hero-grid { grid-template-columns: 1fr; }
+    .blob-wrap { order: -1; }
+    .blob { width: min(64vw, 320px); }
+    .chart-cols { grid-template-columns: 1fr; }
+    .svc-grid { grid-template-columns: 1fr; max-width: 420px; margin-inline: auto; }
+    .nav-links { display: none; }
+    .albers .stack { opacity: 0.5; }
+  }
+  @media (max-width: 560px) {
+    .hero h1 { font-size: 2rem; }
+    .blob { width: 70vw; }
+    .orbit { display: none; }               /* 星芒减量、轨道收起 */
+    .ticket::before, .ticket::after { display: none; }
+    .notice-inner { font-size: 0.875rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .notice .burst { animation: none; }
+    .btn, .ticket { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- 导航：script 字标（全页唯一手写体） -->
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="script-logo" href="#top">Moonbeam</a>
+    <ul class="nav-links">
+      <li><a href="#chart">本周榜单</a></li>
+      <li><a href="#services">服务</a></li>
+      <li><a href="#visit">到店</a></li>
+    </ul>
+    <a class="btn" href="#chart">今日到货</a>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- Blob Hero：左文右形 + 品牌符号黑胶 -->
+  <section class="hero">
+    <div class="container hero-grid">
+      <div>
+        <span class="kicker">EST. 1955 · RECORDS & TURNTABLES</span>
+        <h1 style="margin-top:16px;">音乐，像 <em>1955</em> 年一样转。</h1>
+        <p>Moonbeam 是一间卖黑胶也修唱机的街角小店——78 转的老灵魂、45 转的新朋友，都在这里排队转圈。</p>
+        <div class="hero-cta">
+          <a class="btn" href="#chart">翻翻榜单</a>
+          <a class="link" href="#services">修唱机 →</a>
+        </div>
+      </div>
+      <div class="blob-wrap">
+        <span class="orbit o1" aria-hidden="true"><span class="dot"></span></span>
+        <span class="orbit o2" aria-hidden="true"></span>
+        <div class="blob" role="img" aria-label="黑胶唱片与赤陶色块">
+          <div class="vinyl"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 星芒公告条 -->
+  <div class="notice">
+    <div class="container notice-inner">
+      <span class="burst" aria-hidden="true"></span>
+      <span>本周新到 · 原版 78 转上市 · 满 ¥300 免运费</span>
+      <span class="burst" aria-hidden="true"></span>
+    </div>
+  </div>
+
+  <!-- 菜单卡：本周榜单 -->
+  <section id="chart" class="chart container">
+    <header class="chart-head">
+      <h2>本周榜单</h2>
+      <span class="kicker">Week 40 · 2026</span>
+    </header>
+    <div class="chart-cols">
+      <div>
+        <div class="cat">Jazz</div>
+        <div class="menu-item"><span class="t">Blue Note 精选 · 蓝</span><span class="leader"></span><span class="p num">¥180</span></div>
+        <div class="menu-item"><span class="t">午夜萨克斯 Vol.2</span><span class="leader"></span><span class="p num">¥145</span><span class="tag">NEW</span></div>
+        <div class="menu-item"><span class="t">三重奏在黎明</span><span class="leader"></span><span class="p num">¥160</span></div>
+        <div class="cat" style="margin-top:28px;">Blues</div>
+        <div class="menu-item"><span class="t">密西西比夜车</span><span class="leader"></span><span class="p num">¥150</span></div>
+        <div class="menu-item"><span class="t">口琴与Thunderstorm</span><span class="leader"></span><span class="p num">¥135</span><span class="tag">RESTOCK</span></div>
+      </div>
+      <div>
+        <div class="cat">Pop · 45 转单曲</div>
+        <div class="menu-item"><span class="t">原子小姐 Miss Atomic</span><span class="leader"></span><span class="p num">¥68</span><span class="tag">HOT</span></div>
+        <div class="menu-item"><span class="t">火星情书</span><span class="leader"></span><span class="p num">¥62</span></div>
+        <div class="menu-item"><span class="t">公路旅馆 Pt.1</span><span class="leader"></span><span class="p num">¥58</span></div>
+        <div class="cat" style="margin-top:28px;">78 转古董</div>
+        <div class="menu-item"><span class="t">1948 广播时代精选</span><span class="leader"></span><span class="p num">¥260</span><span class="tag">1 LEFT</span></div>
+        <div class="menu-item"><span class="t">大乐队舞会实况</span><span class="leader"></span><span class="p num">¥240</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 符号三联卡 -->
+  <section id="services" class="services container">
+    <header class="chart-head">
+      <h2>店里三件事</h2>
+      <span class="kicker">Records · Repair · Appraisal</span>
+    </header>
+    <div class="svc-grid">
+      <article class="svc">
+        <div class="glyph" aria-hidden="true"><i></i></div>
+        <h3>唱片订购</h3>
+        <p>全球渠道找货，绝版 jazz 与早期 rock & roll 都可以登记，到货短信通知。</p>
+      </article>
+      <article class="svc">
+        <div class="glyph" aria-hidden="true"><i></i></div>
+        <h3>唱机修复</h3>
+        <p>从皮带换到唱针校准，任何年代的黑胶机都欢迎来体检，三天内交回。</p>
+      </article>
+      <article class="svc">
+        <div class="glyph" aria-hidden="true"><i></i></div>
+        <h3>上门估价</h3>
+        <p> inherited 一柜子老唱片不知道值多少？预约上门，按品相与版次现场估价。</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- 票券区块 -->
+  <section id="visit" class="ticket-wrap container">
+    <div class="ticket">
+      <div class="row"><span class="k">地址 Address</span><span class="v">武康路 378 号 · 武康大楼对面</span></div>
+      <div class="row"><span class="k">营业 Hours</span><span class="v num">周二至周日 11:00 — 20:00</span></div>
+      <div class="row"><span class="k">电话 Tel</span><span class="v num">021-5466-1955</span></div>
+    </div>
+  </section>
+
+  <!-- Albers 宣言区 -->
+  <section class="albers">
+    <div class="container">
+      <blockquote>
+        「一张唱片，是一次原子时代的旅行——出发舱门就是唱针落下的那一下。」
+        <cite>— 店主手记，1955 年创店当日</cite>
+      </blockquote>
+    </div>
+    <div class="stack" aria-hidden="true"><i></i></div>
+  </section>
+
+</main>
+
+<!-- 页脚：回旋镖 + 营业信息 -->
+<footer>
+  <div class="container">
+    <div class="foot-grid">
+      <div>
+        <div class="foot-brand">Moonbeam</div>
+        <p>唱片 · 唱机 · 修理 · 估价<br>自 1955 年，转速不变。</p>
+      </div>
+      <ul>
+        <li><a href="#chart">本周榜单</a></li>
+        <li><a href="#services">唱片订购</a></li>
+        <li><a href="#services">唱机修复</a></li>
+      </ul>
+      <ul>
+        <li>武康路 378 号</li>
+        <li class="num">周二至周日 11:00 — 20:00</li>
+        <li><a href="mailto:hi@moonbeam.example">hi@moonbeam.example</a></li>
+      </ul>
+      <div class="boomerang" aria-hidden="true"></div>
+    </div>
+    <div class="colophon">
+      <span>© 2026 Moonbeam Records</span>
+      <span>Set in Jost & Alfa Slab One — Atomic Age since 1955</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

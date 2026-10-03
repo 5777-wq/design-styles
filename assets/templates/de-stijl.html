@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VORM EN LIJN — De Stijl Template</title>
+<!--
+  De Stijl 风格派起始模板（零构建，可直接打开）
+  ─────────────────────────────────────────────
+  风格规则速记：
+  · 只用横线与竖线：无对角线、无曲线、无圆角、无旋转
+  · 黑线用「容器铺黑 + Grid gap」实现——结构上保证线永远贯通不悬空
+  · 全局 6 色：红/黄/蓝/黑/白/灰；彩块永不相邻；白格 ≥50%
+  · 线宽三档：12 / 8 / 4px；黄块只放黑字，红蓝块只放白色短词
+  · 层级 = 格子面积 × 线宽；hover 只允许 brightness 与线宽加重
+  字体 Archivo Black / Inter / Noto Sans SC 走 Google Fonts
+  详见 design-styles skill 的 references/de-stijl.md
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  /* ============ 1. 设计 Token ============ */
+  :root {
+    --red:    #DD0100;
+    --yellow: #FAC901;
+    --blue:   #225095;
+    --black:  #0D0D0D;
+    --white:  #FFFFFF;
+    --gray:   #8E8E8E;
+
+    --line-lg: 12px;   /* 页首尾贯通线 */
+    --line-md: 8px;    /* 标准网格 gap */
+    --line-sm: 4px;    /* 卡内次级分隔 */
+
+    --font-display: "Archivo Black", "Arial Black", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+    --font-body: "Inter", "Helvetica Neue", "PingFang SC", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body { font-family: var(--font-body); font-size: 1.0625rem; line-height: 1.7; color: var(--black); background: var(--black); }
+  a { color: inherit; text-decoration: none; }
+  :focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+
+  h1, h2, h3 { font-family: var(--font-display); font-weight: 400; line-height: 1.15; }
+  h2 { font-size: clamp(1.625rem, 3.5vw, 2.5rem); }
+  .en { font-size: 0.8125rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gray); }
+  .num { font-variant-numeric: tabular-nums; }
+
+  /* 白格 = 标准内容容器；格子 padding 是唯一的内容呼吸区 */
+  .cell { background: var(--white); padding: clamp(24px, 4vw, 48px); }
+
+  /* ============ 2. 蒙德里安导航：导航即构图 ============ */
+  .nav {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: var(--line-md);
+    padding: var(--line-md);
+    background: var(--black);
+    position: sticky; top: 0; z-index: 10;
+  }
+  .nav .logo {
+    background: var(--white);
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 20px;
+    font-family: var(--font-display); font-size: 1.125rem;
+    min-height: 64px;
+  }
+  .nav .logo i { width: 20px; height: 20px; background: var(--red); flex: none; }
+  .nav a {
+    display: flex; align-items: center; justify-content: center;
+    min-height: 64px;
+    font-size: 0.9375rem; font-weight: 500;
+    transition: filter 120ms;
+  }
+  .nav a:hover { filter: brightness(1.12); }
+  .nav .n-home  { background: var(--white); }
+  .nav .n-work  { background: var(--yellow); color: var(--black); }
+  .nav .n-about { background: var(--blue); color: var(--white); }
+  .nav .n-contact { background: var(--red); color: var(--white); }
+
+  /* ============ 3. 正典 Hero：grid-template-areas 构图 ============ */
+  .hero {
+    display: grid;
+    grid-template-columns: 3fr 1fr 1.6fr;
+    grid-template-rows: 2.2fr 1fr;
+    grid-template-areas:
+      "t t r"
+      "t t y"
+      "b b y";
+    gap: var(--line-md);
+    padding: 0 var(--line-md) var(--line-md);
+    min-height: 78vh;
+  }
+  .hero .t { grid-area: t; display: flex; flex-direction: column; justify-content: center; }
+  .hero .t h1 { font-size: clamp(2rem, 4.5vw, 3.75rem); max-width: 14ch; }
+  .hero .t h1 .u { text-decoration: underline; text-decoration-thickness: 6px; text-underline-offset: 10px; text-decoration-color: var(--blue); }
+  .hero .t p { max-width: 34em; margin-top: 20px; font-size: 1.0625rem; }
+  .hero .r {                                   /* 红块 = CTA */
+    grid-area: r; background: var(--red); color: var(--white);
+    display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end;
+    padding: 24px; min-height: 160px;
+  }
+  .hero .r .go { font-family: var(--font-display); font-size: clamp(1.125rem, 1.8vw, 1.5rem); line-height: 1.3; }
+  .hero .r .en { color: rgba(255,255,255,0.8); margin-bottom: 8px; }
+  .hero .y {                                   /* 黄块 = 年份徽标（黑字） */
+    grid-area: y; background: var(--yellow);
+    display: flex; flex-direction: column; justify-content: flex-start;
+    padding: 20px;
+  }
+  .hero .y .year { font-family: var(--font-display); font-size: clamp(1.5rem, 2.5vw, 2.25rem); color: var(--black); }
+  .hero .y .en { color: rgba(13,13,13,0.7); margin-top: 6px; }
+  .hero .b { grid-area: b; background: var(--white); display: flex; align-items: center; gap: 20px; padding-inline: clamp(24px, 4vw, 48px); }
+  .hero .b .sq { display: flex; gap: var(--line-sm); }
+  .hero .b .sq i { width: 16px; height: 16px; display: block; }
+
+  /* ============ 4. 章节画框：白格 + 编号角标 ============ */
+  .section { padding: 0 var(--line-md) var(--line-md); }
+  .section-head { display: flex; align-items: center; gap: 16px; margin-bottom: var(--line-md); }
+  .section-head .tag { width: 32px; height: 32px; flex: none; display: grid; place-items: center; color: var(--white); font-family: var(--font-display); font-size: 0.875rem; }
+  .section-head h2 { font-size: clamp(1.375rem, 2.5vw, 1.875rem); }
+  .section-head .en { margin-left: auto; }
+
+  /* ============ 5. KPI 色块条 ============ */
+  .kpi { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--line-md); }
+  .kpi .k { padding: 28px 24px; }
+  .kpi .k1 { background: var(--red); color: var(--white); }
+  .kpi .k2 { background: var(--yellow); color: var(--black); }
+  .kpi .k3 { background: var(--blue); color: var(--white); }
+  .kpi .v { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3rem); line-height: 1.1; }
+  .kpi .l { font-size: 0.875rem; margin-top: 8px; opacity: 0.85; }
+  .kpi-note { background: var(--white); padding: 16px 24px; font-size: 0.9375rem; color: #444; }
+
+  /* ============ 6. 不等分画廊：1 红标卡 + 白卡 ============ */
+  .gallery { display: grid; grid-template-columns: repeat(12, 1fr); gap: var(--line-md); }
+  .gcard { background: var(--white); transition: filter 120ms; }
+  .gcard:hover { filter: brightness(0.97); }
+  .gcard .ph { aspect-ratio: 4/3; }
+  .gcard .meta { padding: 16px 20px 20px; border-top: var(--line-sm) solid var(--black); }
+  .gcard .name { font-family: var(--font-display); font-size: 1rem; }
+  .gcard .year { display: block; margin-top: 4px; }
+  .g1 { grid-column: span 5; } .g1 .ph { background: var(--red); }
+  .g2 { grid-column: span 4; } .g2 .ph { background: #E9E6E1; }
+  .g3 { grid-column: span 3; } .g3 .ph { background: #DCD8D2; }
+  .g4 { grid-column: span 3; } .g4 .ph { background: #CFCCC6; }
+  .g5 { grid-column: span 5; } .g5 .ph { background: #C4C1BB; }
+  .g6 { grid-column: span 4; } .g6 .ph { background: #B8B5AF; }
+
+  /* ============ 7. Rietveld 交错页：板片层叠，禁止 rotate ============ */
+  .rietveld { display: grid; grid-template-columns: 1fr 1fr; gap: var(--line-md); align-items: start; }
+  .board { background: var(--white); border: var(--line-md) solid var(--black); padding: clamp(20px, 3vw, 36px); }
+  .board.b1 { margin-top: 0; }
+  .board.b2 { margin-top: calc(var(--line-md) * 3); }
+  .board h3 { font-size: 1.125rem; margin-bottom: 12px; }
+  .board p { font-size: 0.984rem; color: #333; }
+  .board .foot { display: flex; gap: var(--line-sm); margin-top: 16px; }
+  .board .foot i { width: 12px; height: 12px; }
+
+  /* ============ 8. 封底构图页脚 ============ */
+  footer { padding: 0 var(--line-md) var(--line-md); }
+  .cover { background: var(--white); padding: clamp(32px, 5vw, 56px) clamp(24px, 4vw, 48px); display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: end; }
+  .cover .mail { font-family: var(--font-display); font-size: clamp(1.125rem, 2.5vw, 1.75rem); }
+  .cover .mail:hover { color: var(--red); }
+  .cover .addr { font-size: 0.875rem; color: #444; line-height: 2; text-align: right; }
+  .cover-line { display: flex; gap: var(--line-md); margin-top: var(--line-md); justify-content: center; }
+  .cover-line i { width: 16px; height: 16px; display: block; }
+  .cover-meta { background: var(--white); margin-top: var(--line-md); padding: 12px 24px; display: flex; justify-content: space-between; gap: 16px; font-size: 0.8125rem; color: #555; flex-wrap: wrap; }
+
+  /* ============ 9. 响应式：塌缩保序，黑线永不消失 ============ */
+  @media (max-width: 900px) {
+    :root { --line-lg: 8px; --line-md: 6px; }
+    .nav { grid-template-columns: 1fr 1fr; }
+    .nav .logo { grid-column: 1 / -1; }
+    .hero {
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto;
+      grid-template-areas:
+        "t t"
+        "r y"
+        "b b";
+      min-height: 0;
+    }
+    .hero .r, .hero .y { min-height: 120px; }
+    .kpi { grid-template-columns: 1fr; }
+    .gallery .g1, .gallery .g2, .gallery .g3, .gallery .g4, .gallery .g5, .gallery .g6 { grid-column: span 6; }
+    .rietveld { grid-template-columns: 1fr; }
+    .board.b2 { margin-top: 0; }
+  }
+  @media (max-width: 560px) {
+    :root { --line-lg: 6px; --line-md: 4px; }
+    .nav { grid-template-columns: 1fr; }
+    .hero { grid-template-columns: 1fr; grid-template-areas: "t" "r" "y" "b"; }
+    .gallery .g1, .gallery .g2, .gallery .g3, .gallery .g4, .gallery .g5, .gallery .g6 { grid-column: span 12; }
+    .cover { grid-template-columns: 1fr; }
+    .cover .addr { text-align: left; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .nav a, .gcard { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- 蒙德里安导航：导航即构图的一部分 -->
+<nav class="nav" aria-label="主导航">
+  <a class="logo" href="#top"><i aria-hidden="true"></i>VORM EN LIJN</a>
+  <a class="n-home" href="#top">家具 FURNITURE</a>
+  <a class="n-work" href="#gallery">陈列室 GALLERY</a>
+  <a class="n-about" href="#about">工坊 ATELIER</a>
+  <a class="n-contact" href="#contact">联系 CONTACT</a>
+</nav>
+
+<main id="top">
+
+  <!-- 正典 Hero：大白格宣言 + 红块 CTA + 黄块年份 -->
+  <header class="hero">
+    <div class="cell t">
+      <span class="en" style="margin-bottom:16px;">Rietveld Legacy · Since 1918</span>
+      <h1>一九一八年的椅子，<br>今天依然<span class="u">站立</span>。</h1>
+      <p>Vorm en Lijn 复刻并重制风格派经典家具。我们不做复古——我们继续一场 1917 年没有结束的构图：横线、竖线，与三种原色。</p>
+    </div>
+    <a class="r" href="#contact">
+      <span class="en">Reserve</span>
+      <span class="go">预约陈列室 →</span>
+    </a>
+    <div class="y">
+      <span class="year num">1918→2026</span>
+      <span class="en">One composition, 108 years</span>
+    </div>
+    <div class="b">
+      <span class="sq" aria-hidden="true">
+        <i style="background:var(--red)"></i><i style="background:var(--yellow)"></i><i style="background:var(--blue)"></i>
+      </span>
+      <span style="font-size:0.9375rem;">乌得勒支 · 上海 · 常设陈列</span>
+    </div>
+  </header>
+
+  <!-- 故事画框 -->
+  <section class="section">
+    <header class="section-head">
+      <span class="tag" style="background:var(--red);">01</span>
+      <h2>红蓝椅，第三次重制</h2>
+      <span class="en">The Red and Blue Chair</span>
+    </header>
+    <div class="cell" style="display:grid; grid-template-columns: 2fr 1fr; gap: clamp(20px,3vw,40px); align-items:center;">
+      <div>
+        <p>Rietveld 在 1918 年用直角木条搭出这把椅子时，它还不是红蓝的。1923 年前后，Bart van der Leck 建议为它施色——黑色骨架承托红背蓝座，家具第一次成为可坐的构图。</p>
+        <p style="margin-top:16px;">我们的复刻版遵循施罗德住宅同期的色彩基准：三原色之外不加第四种颜色，接缝不加圆角，受力件不做装饰。每一件出厂前都由工匠手写编号。</p>
+      </div>
+      <div class="ph" role="img" aria-label="红蓝椅构图占位" style="aspect-ratio:1/1; background:linear-gradient(135deg, #F2F0EC, #E4E1DB); border: var(--line-sm) solid var(--black); display:grid; place-items:center;">
+        <div style="width:56px;height:56px;background:var(--red);"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- KPI 色块条 -->
+  <section class="section">
+    <header class="section-head">
+      <span class="tag" style="background:var(--blue);">02</span>
+      <h2>工坊在册</h2>
+      <span class="en">In Numbers</span>
+    </header>
+    <div class="kpi">
+      <div class="k k1"><div class="v num">106</div><div class="l">年构图史 · 1918 起</div></div>
+      <div class="k k2"><div class="v num">12</div><div class="l">位在册匠人</div></div>
+      <div class="k k3"><div class="v num">3</div><div class="l">种原色，不多一种</div></div>
+    </div>
+    <p class="kpi-note">所有家具接受定制配色，但配色只允许在 6 色词汇表内选择——这是我们对「风格派」这个词的全部诚实。</p>
+  </section>
+
+  <!-- 不等分画廊 -->
+  <section id="gallery" class="section">
+    <header class="section-head">
+      <span class="tag" style="background:var(--yellow); color:var(--black);">03</span>
+      <h2>本季陈列</h2>
+      <span class="en">Selected Works</span>
+    </header>
+    <div class="gallery">
+      <article class="gcard g1"><div class="ph" role="img" aria-label="红蓝椅"></div><div class="meta"><div class="name">红蓝椅复刻版</div><span class="year en num">Rietveld, 1918 — ¥28,000</span></div></article>
+      <article class="gcard g2"><div class="ph" role="img" aria-label="施罗德桌"></div><div class="meta"><div class="name">施罗德伸缩桌</div><span class="year en num">1924 — ¥16,800</span></div></article>
+      <article class="gcard g3"><div class="ph" role="img" aria-label="柏林椅"></div><div class="meta"><div class="name">柏林椅</div><span class="year en num">1923 — ¥22,000</span></div></article>
+      <article class="gcard g4"><div class="ph" role="img" aria-label="板条凳"></div><div class="meta"><div class="name">板条凳 Crate</div><span class="year en num">1934 — ¥4,200</span></div></article>
+      <article class="gcard g5"><div class="ph" role="img" aria-label="悬臂边几"></div><div class="meta"><div class="name">正交边几 No.9</div><span class="year en num">VM Original — ¥8,800</span></div></article>
+      <article class="gcard g6"><div class="ph" role="img" aria-label="原色书架"></div><div class="meta"><div class="name">六格原色书架</div><span class="year en num">VM Original — ¥12,600</span></div></article>
+    </div>
+  </section>
+
+  <!-- Rietveld 交错页 -->
+  <section id="about" class="section">
+    <header class="section-head">
+      <span class="tag" style="background:var(--red);">04</span>
+      <h2>工坊</h2>
+      <span class="en">The Atelier</span>
+    </header>
+    <div class="rietveld">
+      <div class="board b1">
+        <h3>板片一样的工作室</h3>
+        <p>像施罗德住宅的滑动墙板，我们的工坊也由可移动的直角板片划分：上午是锯台，下午是装配区，周末整面墙滑开，变成陈列室。</p>
+        <div class="foot" aria-hidden="true"><i style="background:var(--red)"></i><i style="background:var(--yellow)"></i><i style="background:var(--blue)"></i></div>
+      </div>
+      <div class="board b2">
+        <h3>「去构造吧」</h3>
+        <p>我们沿用 Lissitzky 那句老话当工训。每件家具保留一张构造图：所有横竖构件的尺寸都落在同一张 8px 网格上——和这张网页一样。</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- 封底构图页脚 -->
+<footer id="contact">
+  <div class="cover">
+    <a class="mail" href="mailto:hello@vormenlijn.example">HELLO@VORMENLIJN.EXAMPLE</a>
+    <div class="addr">
+      Utrecht · Nederland<br>
+      Shanghai · 永嘉路 331 号<br>
+      周三至周日 10:00 — 18:00
+    </div>
+  </div>
+  <div class="cover-line" aria-hidden="true">
+    <i style="background:var(--red)"></i><i style="background:var(--yellow)"></i><i style="background:var(--blue)"></i>
+  </div>
+  <div class="cover-meta">
+    <span>© 2026 Vorm en Lijn · 一场未结束的构图</span>
+    <span>Built on an 8px orthogonal grid — De Stijl, 1917</span>
+  </div>
+</footer>
+
+</body>
+</html>

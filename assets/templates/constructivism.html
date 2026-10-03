@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>斜线国际独立出版市集 — Constructivism Template</title>
+<!--
+  俄国构成主义风格起始模板（零构建，可直接打开）
+  ─────────────────────────────────────────────
+  风格规则速记：
+  · 每屏一条对角线元素；全页只一个主斜向（15°/30°/45° 体系）
+  · 只用红黑米白三色；红色 ≤30% 且每处都「楔入」其他形状
+  · 标题 800-900 字重全大写；摄影灰度高对比 + 套版错位
+  · 口号进条状色块独占一行；starburst ≤1 枚、竖排 ≤1 处
+  · 禁渐变、禁大圆角、禁柔光投影；动效硬切不缓动
+  · 用抽象几何母题，不用国家符号；页脚带风格出处注记
+  字体 Archivo Black / Bebas Neue / Oswald / Inter / Space Mono / Noto Sans SC 走 Google Fonts
+  详见 design-styles skill 的 references/constructivism.md
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Bebas+Neue&family=Oswald:wght@500;700&family=Inter:wght@400;600&family=Space+Mono:wght@400;700&family=Noto+Sans+SC:wght@400;900&display=swap" rel="stylesheet">
+<style>
+  /* ============ 1. 设计 Token ============ */
+  :root {
+    --ink:   #141414;      /* 墨 */
+    --paper: #F2E9DC;      /* 米白报纸底，禁纯白 */
+    --red:   #CE2B37;      /* 正典红 */
+    --red-hot: #D42B1E;    /* 高亮红 hover/徽章 */
+    --grey:  #8A8378;      /* 印刷灰注记 */
+
+    --font-display: "Archivo Black", "Arial Black", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+    --font-tall:    "Bebas Neue", "Oswald", "Arial Narrow", "Noto Sans SC", sans-serif;
+    --font-head:    "Oswald", "Arial Narrow", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+    --font-body:    "Inter", "Helvetica Neue", "PingFang SC", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+    --font-mono:    "Space Mono", "Courier New", monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body { font-family: var(--font-body); font-size: 1.0625rem; line-height: 1.7; color: var(--ink); background: var(--paper); }
+  a { color: inherit; text-decoration: none; }
+  :focus-visible { outline: 3px solid var(--red); outline-offset: 2px; }
+
+  .container { max-width: 1200px; margin-inline: auto; padding-inline: clamp(16px, 4vw, 40px); }
+  .num { font-variant-numeric: tabular-nums; }
+
+  /* ============ 2. 顶部导航条：黑条白字，硬切 ============ */
+  .nav { background: var(--ink); color: var(--paper); }
+  .nav-inner { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 14px; }
+  .wordmark { font-family: var(--font-display); font-size: 1.0625rem; letter-spacing: 0.02em; text-transform: uppercase; }
+  .wordmark .slash { color: var(--red-hot); }
+  .nav-links { display: flex; gap: 24px; list-style: none; font-family: var(--font-head); font-size: 0.875rem; letter-spacing: 0.1em; text-transform: uppercase; }
+  .nav-links a:hover { color: var(--red-hot); }
+  .nav-cta { font-family: var(--font-head); font-weight: 700; font-size: 0.875rem; letter-spacing: 0.1em; text-transform: uppercase; background: var(--red); color: var(--paper); padding: 8px 18px; }
+  .nav-cta:hover { background: var(--red-hot); }
+
+  /* ============ 3. 对角 Hero：30° 红楔 + 黑楔反向插入 + starburst ============ */
+  .hero { position: relative; padding-block: 120px 150px; overflow: hidden; }
+  .band {                                  /* 主斜向红带：贯穿出血 */
+    position: absolute; left: -10%; right: -10%; top: 46%;
+    height: clamp(110px, 16vw, 170px);
+    background: var(--red);
+    transform: skewY(-4deg);               /* ≈30° 视觉斜向 */
+  }
+  .hero-inner { position: relative; }
+  .hero h1 {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: clamp(2.5rem, 7.5vw, 6.5rem);
+    line-height: 1.02;
+    text-transform: uppercase;
+    transform: rotate(-4deg);
+    transform-origin: left bottom;
+    max-width: 12ch;
+  }
+  .hero h1 .hollow { color: var(--paper); -webkit-text-stroke: 2px var(--ink); }
+  .hero .sub {
+    margin-top: 28px;
+    font-family: var(--font-head); font-weight: 500; font-size: clamp(1rem, 1.6vw, 1.25rem);
+    letter-spacing: 0.12em; text-transform: uppercase;
+  }
+  .hero .sub b { color: var(--red); }
+  .wedge-date {                            /* 45° 黑楔反向插入红带 */
+    position: absolute; right: clamp(8px, 6vw, 80px); bottom: 30px;
+    width: clamp(150px, 18vw, 220px); aspect-ratio: 1;
+    background: var(--ink); color: var(--paper);
+    clip-path: polygon(100% 0, 100% 100%, 0 100%);
+    display: flex; flex-direction: column; justify-content: flex-end; align-items: flex-end;
+    padding: 0 22px 20px 0;
+    text-align: right;
+  }
+  .wedge-date .d { font-family: var(--font-display); font-size: clamp(1.125rem, 1.8vw, 1.5rem); line-height: 1.25; }
+  .wedge-date .en { font-family: var(--font-mono); font-size: 0.6875rem; letter-spacing: 0.08em; color: var(--grey); }
+  .starburst {                             /* 每页唯一一枚 starburst 徽章 */
+    position: absolute; right: clamp(20px, 10vw, 160px); top: 48px;
+    width: clamp(120px, 12vw, 160px); aspect-ratio: 1;
+    background: var(--red-hot); color: var(--paper);
+    clip-path: polygon(100% 50%, 88.7% 61.5%, 95.1% 75%, 79.4% 79.4%, 75% 95.1%, 61.5% 88.7%, 50% 100%, 38.5% 88.7%, 25% 95.1%, 20.6% 79.4%, 4.9% 75%, 11.3% 61.5%, 0% 50%, 11.3% 38.5%, 4.9% 25%, 20.6% 20.6%, 25% 4.9%, 38.5% 11.3%, 50% 0%, 61.5% 11.3%, 75% 4.9%, 79.4% 20.6%, 95.1% 25%, 88.7% 38.5%);
+    display: grid; place-items: center; text-align: center;
+    transform: rotate(15deg);
+    transition: transform 150ms;
+  }
+  .starburst:hover { transform: rotate(3deg); }
+  .starburst .t { font-family: var(--font-display); font-size: 1.0625rem; line-height: 1.2; }
+  .starburst .e { font-family: var(--font-mono); font-size: 0.5625rem; letter-spacing: 0.1em; margin-top: 4px; }
+
+  /* ============ 4. 口号条：agitprop 必须喊出来 ============ */
+  .slogan { background: var(--red); color: var(--paper); overflow: hidden; border-block: 3px solid var(--ink); }
+  .slogan-track {
+    display: inline-block; white-space: nowrap;
+    font-family: var(--font-head); font-weight: 700; font-size: 1.125rem;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    padding-block: 12px;
+    animation: march 60s linear infinite;
+  }
+  .slogan .sep { margin-inline: 20px; }
+  @keyframes march { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  /* ============ 5. 展签网格：黑描边卡 + 红序号方块 ============ */
+  .stalls { padding-block: clamp(56px, 8vw, 96px) 0; }
+  .head-row { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; margin-bottom: 32px; }
+  h2.display { font-family: var(--font-display); font-weight: 900; font-size: clamp(1.625rem, 3.5vw, 2.75rem); text-transform: uppercase; }
+  .head-row .en { font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--grey); margin-left: auto; }
+  .stall-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+  .stall {
+    position: relative;
+    border: 3px solid var(--ink);
+    background: var(--paper);
+    padding: 20px 18px 16px 18px;
+    min-height: 132px;
+    display: flex; flex-direction: column; justify-content: flex-end; gap: 4px;
+  }
+  .stall .no {
+    position: absolute; top: -3px; left: -3px;
+    width: 44px; height: 44px;
+    background: var(--red); color: var(--paper);
+    font-family: var(--font-display); font-size: 0.875rem;
+    display: grid; place-items: center;
+  }
+  .stall .name { font-family: var(--font-head); font-weight: 700; font-size: 1.0625rem; text-transform: uppercase; margin-top: 28px; }
+  .stall .meta { font-family: var(--font-mono); font-size: 0.6875rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--grey); }
+  .stall.hot { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  .stall.hot .no { background: var(--red-hot); }
+  .stall.hot .meta { color: var(--grey); }
+
+  /* ============ 6. 蒙太奇区：灰度高对比 + 套版错位 ============ */
+  .montage { padding-block: clamp(56px, 8vw, 96px); }
+  .montage-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(20px, 3vw, 40px); }
+  .figure { transform: rotate(-15deg); margin: 24px 0; }
+  .figure:nth-child(2) { transform: rotate(15deg); margin-top: 56px; }
+  .figure .frame { position: relative; }
+  .figure .offset {                        /* 套版错位色块 */
+    position: absolute; inset: 0; transform: translate(12px, 12px);
+    background: var(--red);
+  }
+  .figure .offset.black { background: var(--ink); }
+  .figure .ph {                            /* 照片占位：上线替换为灰度高对比人像 */
+    position: relative;
+    aspect-ratio: 3/4;
+    background:
+      linear-gradient(160deg, #DDD4C4 0%, #B9AF9C 45%, #8F8571 100%);
+    filter: grayscale(1) contrast(1.35);
+    mix-blend-mode: multiply;
+    border: 3px solid var(--ink);
+  }
+  .figure figcaption {
+    margin-top: 14px;
+    font-family: var(--font-mono); font-size: 0.6875rem; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--grey);
+  }
+  .figure .who { font-family: var(--font-head); font-weight: 700; font-size: 1.0625rem; text-transform: uppercase; color: var(--ink); }
+  .montage-note { max-width: 40em; margin-top: 40px; font-size: 0.984rem; color: #3d382f; }
+
+  /* ============ 7. 楔形分割带 ============ */
+  .wedge-divider { height: clamp(48px, 7vw, 90px); background: var(--red); border-block: 3px solid var(--ink); }
+  .wedge-divider.inverted { background: var(--ink); border-color: var(--red); }
+
+  /* ============ 8. 议程：竖排栏 + 等宽时间轴 ============ */
+  .sched { position: relative; padding-block: clamp(56px, 8vw, 96px); }
+  .vert-bar {                              /* 全页唯一一处竖排：海报左缘标语栏 */
+    position: absolute; left: 0; top: 0; bottom: 0;
+    width: clamp(56px, 7vw, 80px);
+    background: var(--ink);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .vert-bar span {
+    writing-mode: vertical-rl;
+    font-family: var(--font-tall);
+    font-size: clamp(1.25rem, 2vw, 1.75rem);
+    letter-spacing: 0.3em; text-transform: uppercase;
+    color: var(--red-hot);
+  }
+  .sched-body { padding-left: calc(clamp(56px, 7vw, 80px) + clamp(20px, 4vw, 48px)); }
+  .timeline { border-top: 3px solid var(--ink); max-width: 880px; }
+  .slot {
+    display: grid; grid-template-columns: 110px 1fr auto; gap: 8px 24px;
+    align-items: baseline;
+    padding-block: 18px;
+    border-bottom: 3px solid var(--ink);
+  }
+  .slot .time { font-family: var(--font-mono); font-weight: 700; font-size: 0.9375rem; }
+  .slot .what { font-family: var(--font-head); font-weight: 500; font-size: 1.125rem; text-transform: uppercase; }
+  .slot .where { font-family: var(--font-mono); font-size: 0.6875rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--grey); }
+  .slot .desc { grid-column: 2 / -1; font-size: 0.9375rem; color: #3d382f; }
+  .slot:hover { background: rgba(206, 43, 55, 0.08); }
+
+  /* ============ 9. 票务 CTA：黑底红字，hover 硬切反转 ============ */
+  .cta { background: var(--ink); color: var(--red-hot); border-block: 3px solid var(--ink); }
+  .cta-inner { padding-block: clamp(64px, 9vw, 110px); display: grid; grid-template-columns: 1fr auto; gap: 32px; align-items: center; }
+  .cta h2 { font-family: var(--font-display); font-weight: 900; font-size: clamp(1.75rem, 4.5vw, 3.5rem); line-height: 1.05; text-transform: uppercase; color: var(--paper); max-width: 14ch; }
+  .cta h2 .red { color: var(--red-hot); }
+  .cta .buy {
+    font-family: var(--font-display); font-size: clamp(1.25rem, 2.5vw, 2rem);
+    background: var(--red); color: var(--paper);
+    padding: 28px 56px; text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .cta .buy:hover { background: var(--paper); color: var(--ink); }   /* 硬切反转，无过渡 */
+  .cta .note { grid-column: 1 / -1; font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--grey); }
+
+  /* ============ 10. 页脚 + 出处注记 ============ */
+  footer { padding-block: 40px 48px; }
+  .foot-grid { display: flex; justify-content: space-between; gap: 24px; flex-wrap: wrap; align-items: baseline; }
+  .foot-grid .fm { font-family: var(--font-head); font-weight: 700; font-size: 1.125rem; text-transform: uppercase; }
+  .foot-grid ul { list-style: none; font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--grey); line-height: 2.1; }
+  .provenance {
+    margin-top: 36px; padding-top: 16px; border-top: 3px solid var(--ink);
+    font-family: var(--font-mono); font-size: 0.6875rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--grey);
+    display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+  }
+
+  /* ============ 11. 响应式 ============ */
+  @media (max-width: 900px) {
+    .stall-grid { grid-template-columns: repeat(2, 1fr); }
+    .montage-grid { grid-template-columns: 1fr; max-width: 420px; margin-inline: auto; }
+    .figure, .figure:nth-child(2) { transform: none; margin: 32px 0 0; }
+    .figure .offset { transform: translate(6px, 6px); }
+    .sched-body { padding-left: clamp(56px, 7vw, 80px); }
+    .cta-inner { grid-template-columns: 1fr; }
+    .hero { padding-block: 88px 130px; }
+    .hero h1 { font-size: clamp(2.5rem, 10vw, 3.5rem); }   /* 字号下限 40px */
+    .band { height: 96px; }
+    .nav-links { display: none; }
+  }
+  @media (max-width: 560px) {
+    .stall-grid { grid-template-columns: 1fr; }
+    .slot { grid-template-columns: 84px 1fr; }
+    .slot .where { grid-column: 2; }
+    .slot .desc { grid-column: 1 / -1; }
+    .vert-bar { position: static; width: auto; height: 56px; }
+    .vert-bar span { writing-mode: horizontal-tb; letter-spacing: 0.2em; }
+    .sched-body { padding-left: 0; padding-top: 24px; }
+    .wedge-date { width: 130px; }
+    .starburst { width: 104px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .slogan-track { animation: none; }
+    .starburst { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- 黑条导航 -->
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="wordmark" href="#top">斜线<span class="slash">/</span>市集</a>
+    <ul class="nav-links">
+      <li><a href="#stalls">展位</a></li>
+      <li><a href="#montage">驻场</a></li>
+      <li><a href="#sched">日程</a></li>
+    </ul>
+    <a class="nav-cta" href="#tickets">购票</a>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- 对角 Hero：红楔 + 黑楔反向插入 + 唯一 starburst -->
+  <section class="hero">
+    <div class="band" aria-hidden="true"></div>
+    <div class="container hero-inner">
+      <h1>斜线国际<br><span class="hollow">独立出版</span>市集</h1>
+      <p class="sub">Design as construction · <b>印刷即构造</b> · 三天十二巷</p>
+    </div>
+    <div class="wedge-date" aria-hidden="false">
+      <span class="d num">2026<br>10.24—26</span>
+      <span class="en">HALL 4 · M50</span>
+    </div>
+    <div class="starburst" aria-hidden="true">
+      <div><div class="t">早鸟<br>开票</div><div class="e">EARLY BIRD</div></div>
+    </div>
+  </section>
+
+  <!-- 口号条：号召必须喊出来 -->
+  <div class="slogan" aria-hidden="true">
+    <span class="slogan-track">去构造吧！ GO AND CONSTRUCT — 利西茨基，1922 <span class="sep">◤</span> 去构造吧！ GO AND CONSTRUCT — 利西茨基，1922 <span class="sep">◤</span>&nbsp;</span>
+  </div>
+
+  <!-- 展签网格：12 家出版社 -->
+  <section id="stalls" class="stalls container">
+    <header class="head-row">
+      <h2 class="display">十二个展位</h2>
+      <span class="en">STALL 01 — 12</span>
+    </header>
+    <div class="stall-grid">
+      <article class="stall"><span class="no num">01</span><h3 class="name">油墨公社</h3><p class="meta">ZINE / RISO</p></article>
+      <article class="stall"><span class="no num">02</span><h3 class="name">铅字仓库</h3><p class="meta">LETTERPRESS</p></article>
+      <article class="stall"><span class="no num">03</span><h3 class="name">白纸同盟</h3><p class="meta">POETRY</p></article>
+      <article class="stall hot"><span class="no num">04</span><h3 class="name">斜线出版社</h3><p class="meta">HOST / 主宾</p></article>
+      <article class="stall"><span class="no num">05</span><h3 class="name">蓝印工房</h3><p class="meta">CYANOTYPE</p></article>
+      <article class="stall"><span class="no num">06</span><h3 class="name">第三稿</h3><p class="meta">CRITIQUE</p></article>
+      <article class="stall"><span class="no num">07</span><h3 class="name">夜航书局</h3><p class="meta">TRANSLATION</p></article>
+      <article class="stall"><span class="no num">08</span><h3 class="name">活字森林</h3><p class="meta">TYPE SPECIMEN</p></article>
+      <article class="stall"><span class="no num">09</span><h3 class="name">赤纸小组</h3><p class="meta">POSTER</p></article>
+      <article class="stall"><span class="no num">10</span><h3 class="name">装订研究所</h3><p class="meta">BINDING</p></article>
+      <article class="stall"><span class="no num">11</span><h3 class="name">地下测绘队</h3><p class="meta">ATLAS / MAP</p></article>
+      <article class="stall"><span class="no num">12</span><h3 class="name">临界点画册</h3><p class="meta">PHOTOBOOK</p></article>
+    </div>
+  </section>
+
+  <!-- 蒙太奇区：三位驻场艺术家 -->
+  <section id="montage" class="montage container">
+    <header class="head-row">
+      <h2 class="display">驻场三人与三场讲座</h2>
+      <span class="en">RESIDENTS · FIG. 01—03</span>
+    </header>
+    <div class="montage-grid">
+      <figure class="figure">
+        <div class="frame">
+          <div class="offset" aria-hidden="true"></div>
+          <div class="ph" role="img" aria-label="驻场艺术家肖像占位"></div>
+        </div>
+        <figcaption><span class="who">老金</span><br>FIG. 01 · 讲座：从 VKhUTEMAS 到 CSS</figcaption>
+      </figure>
+      <figure class="figure">
+        <div class="frame">
+          <div class="offset black" aria-hidden="true"></div>
+          <div class="ph" role="img" aria-label="驻场艺术家肖像占位"></div>
+        </div>
+        <figcaption><span class="who">Mira K.</span><br>FIG. 02 · 工坊：Riso 双色套印实战</figcaption>
+      </figure>
+      <figure class="figure">
+        <div class="frame">
+          <div class="offset" aria-hidden="true"></div>
+          <div class="ph" role="img" aria-label="驻场艺术家肖像占位"></div>
+        </div>
+        <figcaption><span class="who">阿仑</span><br>FIG. 03 · 放映：先锋派修复短片集</figcaption>
+      </figure>
+    </div>
+    <p class="montage-note">三场讲座与两日工坊均在四号馆进行，凭市集门票免费入场；工坊每场限 16 人，检票口旁领号。</p>
+  </section>
+
+  <!-- 楔形分割带 -->
+  <div class="wedge-divider" aria-hidden="true"></div>
+
+  <!-- 议程：竖排栏 + 时间轴 -->
+  <section id="sched" class="sched">
+    <div class="vert-bar" aria-hidden="true"><span>印刷工坊日程 Workshop</span></div>
+    <div class="container sched-body">
+      <header class="head-row">
+        <h2 class="display">10.24 · 首日</h2>
+        <span class="en">DAY ONE — HALL 4</span>
+      </header>
+      <div class="timeline">
+        <div class="slot">
+          <span class="time num">10:00</span>
+          <span class="what">开幕：楔子与白军</span>
+          <span class="where">MAIN STAGE</span>
+          <p class="desc">主宾斜线出版社开场，讲一本 zine 如何像楔子一样插进公共讨论。</p>
+        </div>
+        <div class="slot">
+          <span class="time num">13:00</span>
+          <span class="what">讲座：从 VKhUTEMAS 到 CSS</span>
+          <span class="where">HALL 4-A</span>
+          <p class="desc">老金——把 1920 年代莫斯科的构成课表对照今天的布局系统逐条对读。</p>
+        </div>
+        <div class="slot">
+          <span class="time num">15:30</span>
+          <span class="what">工坊：Riso 双色套印实战</span>
+          <span class="where">PRINT LAB</span>
+          <p class="desc">Mira K. 带你完成一张红黑双色海报，套版错位是特性不是缺陷。</p>
+        </div>
+        <div class="slot">
+          <span class="time num">19:00</span>
+          <span class="what">放映：先锋派修复短片集</span>
+          <span class="where">HALL 4-B</span>
+          <p class="desc">阿仑策展，六部 1920s 修复短片 + 一场关于「动感的来源」的映后谈。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 票务 CTA -->
+  <section id="tickets" class="cta">
+    <div class="container cta-inner">
+      <h2>单日 ¥60<br>三日通票 <span class="red num">¥128</span></h2>
+      <a class="buy" href="#tickets">立即购票 →</a>
+      <p class="note">EARLY BIRD UNTIL 10.01 · STUDENT HALF PRICE WITH ID · 全部收益反哺独立出版基金</p>
+    </div>
+  </section>
+
+</main>
+
+<!-- 页脚 + 出处注记 -->
+<footer>
+  <div class="container">
+    <div class="foot-grid">
+      <div>
+        <div class="fm">斜线/市集 · DIAGONAL ZINE FAIR</div>
+        <ul>
+          <li>2026.10.24 — 10.26</li>
+          <li>HALL 4 · M50 园区 · 上海</li>
+        </ul>
+      </div>
+      <ul>
+        <li><a href="mailto:hi@diagonal-fair.example">HI@DIAGONAL-FAIR.EXAMPLE</a></li>
+        <li>摊主报名 / 志愿者 / 媒体合作</li>
+      </ul>
+    </div>
+    <div class="provenance">
+      <span>© 2026 斜线市集组委会</span>
+      <span>本站视觉方法源自俄国构成主义 · RUSSIAN CONSTRUCTIVISM 1915—1932</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

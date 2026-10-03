@@ -1,6 +1,6 @@
 ---
 name: design-styles
-description: 网页设计风格选择器与设计语言合集——内置 7 套风格鲜明、可落地的完整设计系统：瑞士国际主义 (swiss)、波普艺术 (pop-art)、包豪斯 (bauhaus)、孟菲斯 (memphis)、新粗野主义 (neubrutalism)、玻璃拟态 (glassmorphism)、日式侘寂 (japandi)。当用户要求做任何网页/官网/落地页/作品集/活动页/UI 界面设计时触发——即使用户没有点名风格；当用户提到「瑞士风格」「波普」「包豪斯」「孟菲斯」「粗野主义」「玻璃拟态/毛玻璃」「日式/侘寂/Japandi」「极简高级」「潮流撞色」等任何风格词时也触发。用户未指定风格时，必须先展示风格菜单让用户选择。
+description: 网页设计风格选择器与设计语言合集——内置 12 套风格鲜明、可落地的完整设计系统：瑞士国际主义 (swiss)、日式侘寂 (japandi)、装饰艺术 (art-deco)、风格派 (de-stijl)、包豪斯 (bauhaus)、构成主义 (constructivism)、中古现代 (mid-century)、玻璃拟态 (glassmorphism)、孟菲斯 (memphis)、波普艺术 (pop-art)、新粗野主义 (neubrutalism)、迷幻海报 (psychedelic)。当用户要求做任何网页/官网/落地页/作品集/活动页/UI 界面设计时触发——即使用户没有点名风格；当用户提到「瑞士风格」「日式/侘寂」「Art Deco」「蒙德里安/风格派」「包豪斯」「构成主义」「中古/复古 50 年代」「玻璃拟态/毛玻璃」「孟菲斯」「波普」「粗野主义」「迷幻」等任何风格词时也触发。用户未指定风格时，必须先展示风格菜单让用户选择。
 ---
 
 # 网页设计风格合集 (Design Styles)
@@ -16,12 +16,17 @@ description: 网页设计风格选择器与设计语言合集——内置 7 套�
 | 风格 | 气质一句话 | 典型场景 |
 |---|---|---|
 | **swiss 瑞士国际主义** | 网格、无衬线、左对齐、冷静高级 | 品牌官网、SaaS、作品集、年报 |
-| **pop-art 波普艺术** | 粗黑描边、高饱和撞色、漫画拟声词 | 潮牌、饮料零食、音乐节、游戏 |
-| **bauhaus 包豪斯** | 几何三原色构成，图形即主角 | 设计院校、美术馆、文化机构 |
-| **memphis 孟菲斯** | 80 年代形状词汇表派对，热闹有语法 | 创意市集、青年品牌、活动页 |
-| **neubrutalism 新粗野主义** | 硬边框 + 硬阴影的贴纸朋克 | 开发者工具、创意工具、D2C |
-| **glassmorphism 玻璃拟态** | 磨砂半透明 + 彩色光斑景深 | 音乐、天气、钱包等情绪化产品 |
 | **japandi 日式侘寂** | 极端留白、明朝体、自然肌理的慢 | 茶/酒/旅馆/匠人品牌、文化机构 |
+| **art-deco 装饰艺术** | 对称的几何奢华：深底、金线、阶梯与旭日纹 | 奢华酒店、爵士酒吧、珠宝、电影院 |
+| **de-stijl 风格派** | 贯通黑线 + 三原色格子的最小视觉语法 | 美术馆、基金会、家具与建筑品牌 |
+| **bauhaus 包豪斯** | 几何三原色构成，图形即主角 | 设计院校、美术馆、文化机构 |
+| **constructivism 构成主义** | 红黑米白的对角动员令：楔形与口号 | 影展、出版市集、文化节、倡议活动 |
+| **mid-century 中古现代** | 原子时代的暖色符号学：blob、星芒、回旋镖 | 咖啡馆、唱片行、复古品牌、创意机构 |
+| **glassmorphism 玻璃拟态** | 磨砂半透明 + 彩色光斑景深 | 音乐、天气、钱包等情绪化产品 |
+| **memphis 孟菲斯** | 80 年代形状词汇表派对，热闹有语法 | 创意市集、青年品牌、活动页 |
+| **pop-art 波普艺术** | 粗黑描边、高饱和撞色、漫画拟声词 | 潮牌、饮料零食、音乐节、游戏 |
+| **neubrutalism 新粗野主义** | 硬边框 + 硬阴影的贴纸朋克 | 开发者工具、创意工具、D2C |
+| **psychedelic 迷幻海报** | 丝网平涂的振动与流动，信息层永远干净 | 音乐节、唱片店、艺术展、快闪 |
 
 **用户已点名风格（如「用波普风格」）时跳过菜单，直接路由。**
 
@@ -45,17 +50,22 @@ description: 网页设计风格选择器与设计语言合集——内置 7 套�
 ## 风格速查：气质极点分布
 
 ```
-冷静 ◀──────────────────────────▶ 热闹
-  japandi    swiss    glassmorphism    bauhaus    memphis    pop-art
-             (克制理性)  (材质情绪)      (几何理性+彩色)  (80s派对)   (漫画高饱和)
-叛逆 ◀──────────────────────────▶ 秩序
-  neubrutalism    pop-art    memphis    bauhaus    glassmorphism    swiss    japandi
+冷静 ◀────────────────────────────────────────────▶ 热闹
+  japandi  swiss  de-stijl  art-deco  bauhaus  mid-century  glassmorphism  memphis  pop-art
+                                             constructivism(动员感)   psychedelic
+叛逆 ◀────────────────────────────────────────────▶ 秩序
+  psychedelic  pop-art  neubrutalism  memphis  constructivism  mid-century  bauhaus  de-stijl  art-deco  swiss  japandi
 ```
 
 - 用户说「极简高级」「性冷淡」「气质」→ swiss 或 japandi（冷静 vs 温暖）
+- 用户说「奢华」「酒店」「爵士年代」「盖茨比」→ art-deco
+- 用户说「蒙德里安」「格子」「秩序感」→ de-stijl（有圆三角图形则 → bauhaus）
+- 用户说「构成主义」「苏联海报」「斜线」「影展」「出版市集」→ constructivism
+- 用户说「复古」「50 年代」「唱片行」「咖啡馆」「原子时代」→ mid-century
 - 用户说「热闹」「年轻」「抓眼球」→ pop-art 或 memphis（漫画 vs 形状派对）
 - 用户说「有态度」「反主流」「开发者」→ neubrutalism
 - 用户说「通透」「材质感」「苹果风」→ glassmorphism
+- 用户说「迷幻」「摇滚」「嗡嗡振动」「嬉皮」→ psychedelic
 - 用户说「几何」「构成」「艺术感」→ bauhaus
 
 ## 如何新增一套风格
@@ -71,8 +81,8 @@ description: 网页设计风格选择器与设计语言合集——内置 7 套�
 design-styles/
 ├── SKILL.md                  ← 本文件（菜单 + 路由）
 ├── references/
-│   ├── swiss.md … japandi.md     （7 份风格规范，选型后必读对应一份）
+│   ├── swiss.md … psychedelic.md （12 份风格规范，选型后必读对应一份）
 │   └── notes/                    （研究笔记：学理、案例、来源）
 └── assets/templates/
-    ├── swiss.html … japandi.html （7 个零构建示范模板）
+    ├── swiss.html … psychedelic.html （12 个零构建示范模板）
 ```
