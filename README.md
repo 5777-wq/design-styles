@@ -1,8 +1,8 @@
 # design-styles · 网页设计风格 Skill 合集
 
-一套给 AI 编码助手（ZCode / Claude Code 等）用的**网页设计风格选择器**：内置 12 套风格鲜明、可直接落地的完整设计语言。装好之后，你对 AI 说「帮我做个官网」，它会先弹风格菜单让你选；选中的风格自带 12 条铁律、完整设计 token 和一个零构建示范模板。
+一套给 AI 编码助手（ZCode / Claude Code 等）用的**网页设计风格选择器**：内置 13 套风格鲜明、可直接落地的完整设计语言。装好之后，你对 AI 说「帮我做个官网」，它会先弹风格菜单让你选；选中的风格自带 12 条铁律、完整设计 token 和一个零构建示范模板。
 
-7 套为当代网页设计语言（瑞士、玻璃拟态、孟菲斯、波普、粗野主义等），5 套为**设计史上由著名设计师开创的正典风格**——Art Deco（Cassandre、1925 巴黎博览会）、De Stijl（Mondrian、Rietveld）、俄国构成主义（Lissitzky、Rodchenko）、Mid-Century Modern（Paul Rand、Saul Bass）、迷幻海报（旧金山 Fillmore 学派 Big Five）。
+7 套为当代网页设计语言（瑞士、玻璃拟态、孟菲斯、波普、粗野主义等），5 套为**设计史上由著名设计师开创的正典风格**——Art Deco（Cassandre、1925 巴黎博览会）、De Stijl（Mondrian、Rietveld）、俄国构成主义（Lissitzky、Rodchenko）、Mid-Century Modern（Paul Rand、Saul Bass）、迷幻海报（旧金山 Fillmore 学派 Big Five）；另有 1 套 **anthropic 纸感编辑部**——从 Claude/Anthropic 官网实机渲染页面提取全部设计 token 后复刻的当代「calm tech」标杆。
 
 灵感来自瑞士国际主义（International Typographic Style）的方法论：**无衬线、左对齐、客观、网格驱动**——然后把同样的「可执行规范」思路扩展到另外 11 种气质完全不同的风格。
 
@@ -12,6 +12,7 @@
 |---|---|---|---|
 | **swiss** 瑞士国际主义 | 网格、无衬线、左对齐、冷静高级 | 品牌官网、SaaS、作品集、年报 | ![swiss](docs/screenshots/swiss.png) |
 | **japandi** 日式侘寂 | 极端留白、明朝体、自然肌理的慢 | 茶/酒/旅馆/匠人品牌、文化机构 | ![japandi](docs/screenshots/japandi.png) |
+| **anthropic** 纸感编辑部 | 暖纸底、衬线叙事、墨色 10% hairline、clay 点缀 | AI 产品、研究机构、写作工具、出版物 | ![anthropic](docs/screenshots/anthropic.png) |
 | **art-deco** 装饰艺术 | 对称的几何奢华：深底、金线、阶梯与旭日纹 | 奢华酒店、爵士酒吧、珠宝、电影院 | ![art-deco](docs/screenshots/art-deco.png) |
 | **de-stijl** 风格派 | 贯通黑线 + 三原色格子的最小视觉语法 | 美术馆、基金会、家具与建筑品牌 | ![de-stijl](docs/screenshots/de-stijl.png) |
 | **bauhaus** 包豪斯 | 几何三原色构成，图形即主角 | 设计院校、美术馆、文化机构 | ![bauhaus](docs/screenshots/bauhaus.png) |
@@ -49,10 +50,10 @@ git clone https://github.com/5777-wq/design-styles.git "$HOME\.agents\skills\des
 design-styles/
 ├── SKILL.md                  # 风格菜单 + 路由工作流
 ├── references/
-│   ├── swiss.md … psychedelic.md  # 12 份风格规范：本质 / 12 条铁律 / 设计 token / 工作流 / 自检清单
-│   └── notes/                     # 17 份研究笔记：设计史、真实案例拆解、信息来源 URL
+│   ├── swiss.md … anthropic.md    # 13 份风格规范：本质 / 12 条铁律 / 设计 token / 工作流 / 自检清单
+│   └── notes/                     # 18 份研究笔记：设计史、真实案例拆解、信息来源 URL
 ├── assets/templates/
-│   └── swiss.html … psychedelic.html # 12 个零构建示范模板（单文件，浏览器直接打开）
+│   └── swiss.html … anthropic.html   # 13 个零构建示范模板（单文件，浏览器直接打开）
 └── docs/screenshots/              # 模板渲染截图
 ```
 
@@ -64,6 +65,7 @@ design-styles/
 |---|---|---|
 | swiss | 纸白 `#F7F6F2` / 墨 `#111` / 瑞士红 `#E30613` | 12 列网格、hairline、编号系统 |
 | japandi | 生成り `#F7F3EC` / 墨 `#26231F` / 臙脂 `#B94047` | 竖排落款、1px 细线、纸纹噪点 |
+| anthropic | 象牙 `#FAF9F5` / 墨 `#141413` / clay `#D97757` | 边框=墨色10%透明度、衬线正文、mono 档案行 |
 | art-deco | 午夜 `#0D0D0F` / 翡翠 `#0F5132` / 金线 `#D4AF37` | 严格对称、旭日纹 conic-gradient、双层 hairline |
 | de-stijl | 红 `#DD0100` / 黄 `#FAC901` / 蓝 `#225095` / 黑白 | Grid gap 贯通黑线、彩块不相邻、面积即层级 |
 | bauhaus | 红 `#E2001A` / 黄 `#F5A800` / 蓝 `#1D4E89` | Kandinsky 形色配对、45° 旋转、直角 |

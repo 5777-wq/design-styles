@@ -1,6 +1,6 @@
 ---
 name: design-styles
-description: 网页设计风格选择器与设计语言合集——内置 12 套风格鲜明、可落地的完整设计系统：瑞士国际主义 (swiss)、日式侘寂 (japandi)、装饰艺术 (art-deco)、风格派 (de-stijl)、包豪斯 (bauhaus)、构成主义 (constructivism)、中古现代 (mid-century)、玻璃拟态 (glassmorphism)、孟菲斯 (memphis)、波普艺术 (pop-art)、新粗野主义 (neubrutalism)、迷幻海报 (psychedelic)。当用户要求做任何网页/官网/落地页/作品集/活动页/UI 界面设计时触发——即使用户没有点名风格；当用户提到「瑞士风格」「日式/侘寂」「Art Deco」「蒙德里安/风格派」「包豪斯」「构成主义」「中古/复古 50 年代」「玻璃拟态/毛玻璃」「孟菲斯」「波普」「粗野主义」「迷幻」等任何风格词时也触发。用户未指定风格时，必须先展示风格菜单让用户选择。
+description: 网页设计风格选择器与设计语言合集——内置 13 套风格鲜明、可落地的完整设计系统：瑞士国际主义 (swiss)、日式侘寂 (japandi)、Anthropic/Claude 纸感编辑部 (anthropic)、装饰艺术 (art-deco)、风格派 (de-stijl)、包豪斯 (bauhaus)、构成主义 (constructivism)、中古现代 (mid-century)、玻璃拟态 (glassmorphism)、孟菲斯 (memphis)、波普艺术 (pop-art)、新粗野主义 (neubrutalism)、迷幻海报 (psychedelic)。当用户要求做任何网页/官网/落地页/作品集/活动页/UI 界面设计时触发——即使用户没有点名风格；当用户提到「瑞士风格」「日式/侘寂」「像 Claude/Anthropic 官网」「纸感」「编辑部风」「Art Deco」「蒙德里安/风格派」「包豪斯」「构成主义」「中古/复古 50 年代」「玻璃拟态/毛玻璃」「孟菲斯」「波普」「粗野主义」「迷幻」等任何风格词时也触发。用户未指定风格时，必须先展示风格菜单让用户选择。
 ---
 
 # 网页设计风格合集 (Design Styles)
@@ -17,6 +17,7 @@ description: 网页设计风格选择器与设计语言合集——内置 12 套
 |---|---|---|
 | **swiss 瑞士国际主义** | 网格、无衬线、左对齐、冷静高级 | 品牌官网、SaaS、作品集、年报 |
 | **japandi 日式侘寂** | 极端留白、明朝体、自然肌理的慢 | 茶/酒/旅馆/匠人品牌、文化机构 |
+| **anthropic 纸感编辑部** | 暖纸底、衬线叙事、墨色 10% hairline、clay 点缀 | AI 产品、研究机构、写作工具、出版物 |
 | **art-deco 装饰艺术** | 对称的几何奢华：深底、金线、阶梯与旭日纹 | 奢华酒店、爵士酒吧、珠宝、电影院 |
 | **de-stijl 风格派** | 贯通黑线 + 三原色格子的最小视觉语法 | 美术馆、基金会、家具与建筑品牌 |
 | **bauhaus 包豪斯** | 几何三原色构成，图形即主角 | 设计院校、美术馆、文化机构 |
@@ -58,6 +59,7 @@ description: 网页设计风格选择器与设计语言合集——内置 12 套
 ```
 
 - 用户说「极简高级」「性冷淡」「气质」→ swiss 或 japandi（冷静 vs 温暖）
+- 用户说「像 Claude/Anthropic 官网」「纸感」「书卷气」「编辑部」→ anthropic
 - 用户说「奢华」「酒店」「爵士年代」「盖茨比」→ art-deco
 - 用户说「蒙德里安」「格子」「秩序感」→ de-stijl（有圆三角图形则 → bauhaus）
 - 用户说「构成主义」「苏联海报」「斜线」「影展」「出版市集」→ constructivism
@@ -81,8 +83,8 @@ description: 网页设计风格选择器与设计语言合集——内置 12 套
 design-styles/
 ├── SKILL.md                  ← 本文件（菜单 + 路由）
 ├── references/
-│   ├── swiss.md … psychedelic.md （12 份风格规范，选型后必读对应一份）
+│   ├── swiss.md … anthropic.md   （13 份风格规范，选型后必读对应一份）
 │   └── notes/                    （研究笔记：学理、案例、来源）
 └── assets/templates/
-    ├── swiss.html … psychedelic.html （12 个零构建示范模板）
+    ├── swiss.html … anthropic.html （13 个零构建示范模板）
 ```
